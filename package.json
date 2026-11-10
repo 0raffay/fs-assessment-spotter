@@ -1,0 +1,29 @@
+{
+  "name": "fs-assessment-spotter",
+  "private": true,
+  "description": "Weather-aware truck routing — React (Vite) + Django monorepo",
+  "packageManager": "pnpm@10.34.1",
+  "engines": {
+    "node": ">=22",
+    "pnpm": ">=10"
+  },
+  "scripts": {
+    "setup": "pnpm install && pnpm api:sync",
+    "dev": "concurrently -k -n web,api -c cyan,magenta \"pnpm web:dev\" \"pnpm api:dev\"",
+    "build": "pnpm --filter web build",
+    "lint": "pnpm web:lint && pnpm api:lint",
+    "format": "pnpm --filter web format && pnpm api:format",
+    "test": "pnpm --filter web test && pnpm api:test",
+    "web:dev": "pnpm --filter web dev",
+    "web:lint": "pnpm --filter web lint",
+    "api:sync": "uv sync --directory apps/api",
+    "api:dev": "uv run --directory apps/api python manage.py runserver 8000",
+    "api:migrate": "uv run --directory apps/api python manage.py migrate",
+    "api:lint": "uv run --directory apps/api ruff check . && uv run --directory apps/api ruff format --check .",
+    "api:format": "uv run --directory apps/api ruff check --fix . && uv run --directory apps/api ruff format .",
+    "api:test": "uv run --directory apps/api pytest"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.0"
+  }
+}
