@@ -2,11 +2,11 @@
 
 ## 1. Prerequisites
 
-| Tool   | Version | Install                                                                 |
-| ------ | ------- | ----------------------------------------------------------------------- |
-| Node   | 22+     | https://nodejs.org (the repo has an `.nvmrc`)                           |
-| pnpm   | 10+     | `npm install -g pnpm` or `corepack enable`                              |
-| Python | 3.11+   | https://www.python.org/downloads/                                       |
+| Tool   | Version | Install                                                                          |
+| ------ | ------- | -------------------------------------------------------------------------------- |
+| Node   | 22+     | https://nodejs.org (the repo has an `.nvmrc`)                                    |
+| pnpm   | 10+     | `npm install -g pnpm` or `corepack enable`                                       |
+| Python | 3.11+   | https://www.python.org/downloads/                                                |
 | uv     | latest  | `pip install uv`, or see https://docs.astral.sh/uv/getting-started/installation/ |
 
 Check they are on your `PATH`:
@@ -42,22 +42,22 @@ cp apps/web/.env.example apps/web/.env
 
 **Backend (`apps/api/.env`)**
 
-| Variable                | Default (dev)                   | Purpose                              |
-| ----------------------- | ------------------------------- | ------------------------------------ |
-| `DJANGO_SECRET_KEY`     | insecure dev key                | Required in production               |
-| `DJANGO_DEBUG`          | `true`                          | Debug mode                           |
-| `DJANGO_ALLOWED_HOSTS`  | `localhost,127.0.0.1`           | Comma-separated host names           |
-| `CORS_ALLOWED_ORIGINS`  | `http://localhost:5173`         | Frontend origins allowed to call API |
-| `DATABASE_URL`          | SQLite at `apps/api/db.sqlite3` | e.g. `postgres://user:pass@host/db`  |
-| `CACHE_URL`             | in-memory                       | e.g. `redis://localhost:6379/0`      |
-| `CSRF_TRUSTED_ORIGINS`  | none                            | Production only                      |
+| Variable               | Default (dev)                   | Purpose                              |
+| ---------------------- | ------------------------------- | ------------------------------------ |
+| `DJANGO_SECRET_KEY`    | insecure dev key                | Required in production               |
+| `DJANGO_DEBUG`         | `true`                          | Debug mode                           |
+| `DJANGO_ALLOWED_HOSTS` | `localhost,127.0.0.1`           | Comma-separated host names           |
+| `CORS_ALLOWED_ORIGINS` | `http://localhost:5173`         | Frontend origins allowed to call API |
+| `DATABASE_URL`         | SQLite at `apps/api/db.sqlite3` | e.g. `postgres://user:pass@host/db`  |
+| `CACHE_URL`            | in-memory                       | e.g. `redis://localhost:6379/0`      |
+| `CSRF_TRUSTED_ORIGINS` | none                            | Production only                      |
 
 **Frontend (`apps/web/.env`)**
 
-| Variable                | Default                 | Purpose                                         |
-| ----------------------- | ----------------------- | ----------------------------------------------- |
-| `VITE_API_PROXY_TARGET` | `http://127.0.0.1:8000` | Where the dev server forwards `/api` requests   |
-| `VITE_API_BASE_URL`     | `/api`                  | Production: full URL of the deployed API        |
+| Variable                | Default                 | Purpose                                       |
+| ----------------------- | ----------------------- | --------------------------------------------- |
+| `VITE_API_PROXY_TARGET` | `http://127.0.0.1:8000` | Where the dev server forwards `/api` requests |
+| `VITE_API_BASE_URL`     | `/api`                  | Production: full URL of the deployed API      |
 
 ## 4. Run
 
@@ -85,11 +85,11 @@ pnpm build    # type-check + production build of the web app
 
 ## Settings modules (backend)
 
-| Module                  | Used by                              |
-| ----------------------- | ------------------------------------ |
-| `config.settings.dev`   | `manage.py` (default)                |
-| `config.settings.test`  | pytest (set in `pyproject.toml`)     |
-| `config.settings.prod`  | `wsgi.py` / `asgi.py` (gunicorn)     |
+| Module                 | Used by                          |
+| ---------------------- | -------------------------------- |
+| `config.settings.dev`  | `manage.py` (default)            |
+| `config.settings.test` | pytest (set in `pyproject.toml`) |
+| `config.settings.prod` | `wsgi.py` / `asgi.py` (gunicorn) |
 
 Choose another one with `DJANGO_SETTINGS_MODULE`.
 

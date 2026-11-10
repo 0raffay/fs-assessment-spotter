@@ -10,13 +10,13 @@ with a 0–48 h weather heatmap.
 
 ## Tech stack
 
-| Area      | Choice                                                        |
-| --------- | ------------------------------------------------------------- |
-| Monorepo  | pnpm workspaces, root scripts run both apps (`concurrently`)  |
-| Frontend  | React 19, Vite, TypeScript, Tailwind CSS v4, TanStack Query   |
-| Backend   | Django 5.2 LTS, Django REST Framework, django-environ         |
-| Python    | Python 3.11, managed with [uv](https://docs.astral.sh/uv/)    |
-| Quality   | Frontend: oxlint, Prettier, Vitest. Backend: Ruff, pytest     |
+| Area     | Choice                                                                           |
+| -------- | -------------------------------------------------------------------------------- |
+| Monorepo | pnpm workspaces, root scripts run both apps (`concurrently`)                     |
+| Frontend | React 19, Vite, TypeScript, Tailwind CSS v4, TanStack Query, axios, React Router |
+| Backend  | Django 5.2 LTS, Django REST Framework, django-environ                            |
+| Python   | Python 3.11, managed with [uv](https://docs.astral.sh/uv/)                       |
+| Quality  | Frontend: oxlint, Prettier, Vitest. Backend: Ruff, pytest                        |
 
 ## Quick start
 
@@ -33,22 +33,24 @@ Open http://localhost:5173. The page should show **API status: ok**.
 
 ## Scripts (run from the repo root)
 
-| Script             | What it does                                         |
-| ------------------ | ---------------------------------------------------- |
-| `pnpm setup`       | Install frontend deps and sync the backend venv      |
-| `pnpm dev`         | Run the web and API dev servers together             |
+| Script             | What it does                                           |
+| ------------------ | ------------------------------------------------------ |
+| `pnpm setup`       | Install frontend deps and sync the backend venv        |
+| `pnpm dev`         | Run the web and API dev servers together               |
 | `pnpm build`       | Type-check and build the frontend into `apps/web/dist` |
-| `pnpm lint`        | oxlint + Prettier check (web), Ruff (api)            |
-| `pnpm format`      | Auto-format both apps                                |
-| `pnpm test`        | Vitest (web) + pytest (api)                          |
-| `pnpm web:dev`     | Frontend dev server only                             |
-| `pnpm api:dev`     | Django dev server only                               |
-| `pnpm api:migrate` | Apply Django migrations                              |
+| `pnpm lint`        | oxlint + Prettier check (web), Ruff (api)              |
+| `pnpm format`      | Auto-format both apps                                  |
+| `pnpm test`        | Vitest (web) + pytest (api)                            |
+| `pnpm web:dev`     | Frontend dev server only                               |
+| `pnpm api:dev`     | Django dev server only                                 |
+| `pnpm api:migrate` | Apply Django migrations                                |
 
 ## Documentation
 
 - [docs/setup.md](docs/setup.md): installing, configuring and running locally
-- [docs/folder-structure.md](docs/folder-structure.md): where code lives and why
+- [docs/folder-structure.md](docs/folder-structure.md): repo overview and naming at a glance
+- [docs/frontend-structure.md](docs/frontend-structure.md): feature folders, api layer, `ROUTES`
+- [docs/backend-structure.md](docs/backend-structure.md): Django apps, api/services/clients layers
 
 ## Repository layout (short)
 
