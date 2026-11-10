@@ -1,5 +1,5 @@
 {
-  "name": "fs-assessment-spotter",
+  "name": "skyrig",
   "private": true,
   "description": "Weather-aware truck routing — React (Vite) + Django monorepo",
   "packageManager": "pnpm@10.34.1",

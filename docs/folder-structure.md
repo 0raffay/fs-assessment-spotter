@@ -1,10 +1,10 @@
 # Folder structure
 
 ```
-fs-assessment-spotter/
+<repo-root>/
 ├── apps/
 │   ├── web/                     React frontend (pnpm workspace package "web")
-│   └── api/                     Django backend (uv project "spotter-api")
+│   └── api/                     Django backend (uv project "skyrig-api")
 ├── docs/                        Project documentation
 ├── package.json                 Root scripts that run both apps
 ├── pnpm-workspace.yaml          Lists the JS workspace packages

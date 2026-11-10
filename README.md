@@ -1,4 +1,8 @@
-# Spotter — Weather-Aware Truck Routing
+<p align="center">
+  <img src="apps/web/public/logo.svg" alt="SkyRig — weather-aware truck routing" width="420" />
+</p>
+
+# SkyRig — Weather-Aware Truck Routing
 
 A web app that helps a truck driver pick the safest route between two places. It weighs
 **weather along the route** (forecast for when the truck actually gets there), **load weight**

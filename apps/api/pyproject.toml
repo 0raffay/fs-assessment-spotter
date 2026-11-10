@@ -1,5 +1,5 @@
 [project]
-name = "spotter-api"
+name = "skyrig-api"
 version = "0.1.0"
 requires-python = ">=3.11"
 description = "Django API for weather-aware truck routing"
