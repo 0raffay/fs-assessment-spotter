@@ -51,6 +51,7 @@ Open http://localhost:5173. The page should show **API status: ok**.
 
 ## Documentation
 
+- [DESIGN.md](DESIGN.md): design system (colors, type, components), mapped to shadcn/ui tokens
 - [docs/setup.md](docs/setup.md): installing, configuring and running locally
 - [docs/folder-structure.md](docs/folder-structure.md): repo overview and naming at a glance
 - [docs/frontend-structure.md](docs/frontend-structure.md): feature folders, api layer, `ROUTES`
