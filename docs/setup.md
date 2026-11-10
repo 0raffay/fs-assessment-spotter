@@ -42,15 +42,16 @@ cp apps/web/.env.example apps/web/.env
 
 **Backend (`apps/api/.env`)**
 
-| Variable               | Default (dev)                   | Purpose                              |
-| ---------------------- | ------------------------------- | ------------------------------------ |
-| `DJANGO_SECRET_KEY`    | insecure dev key                | Required in production               |
-| `DJANGO_DEBUG`         | `true`                          | Debug mode                           |
-| `DJANGO_ALLOWED_HOSTS` | `localhost,127.0.0.1`           | Comma-separated host names           |
-| `CORS_ALLOWED_ORIGINS` | `http://localhost:5173`         | Frontend origins allowed to call API |
-| `DATABASE_URL`         | SQLite at `apps/api/db.sqlite3` | e.g. `postgres://user:pass@host/db`  |
-| `CACHE_URL`            | in-memory                       | e.g. `redis://localhost:6379/0`      |
-| `CSRF_TRUSTED_ORIGINS` | none                            | Production only                      |
+| Variable               | Default (dev)                   | Purpose                                                                                                                                 |
+| ---------------------- | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `DJANGO_SECRET_KEY`    | insecure dev key                | Required in production                                                                                                                  |
+| `DJANGO_DEBUG`         | `true`                          | Debug mode                                                                                                                              |
+| `DJANGO_ALLOWED_HOSTS` | `localhost,127.0.0.1`           | Comma-separated host names                                                                                                              |
+| `CORS_ALLOWED_ORIGINS` | `http://localhost:5173`         | Frontend origins allowed to call API                                                                                                    |
+| `DATABASE_URL`         | SQLite at `apps/api/db.sqlite3` | e.g. `postgres://user:pass@host/db`                                                                                                     |
+| `CACHE_URL`            | in-memory                       | e.g. `redis://localhost:6379/0`                                                                                                         |
+| `CSRF_TRUSTED_ORIGINS` | none                            | Production only                                                                                                                         |
+| `HERE_API_KEY`         | empty                           | HERE routing + geocoding key, from [platform.here.com](https://platform.here.com) (Access Manager → Apps → API Keys). Server-side only. |
 
 **Frontend (`apps/web/.env`)**
 
