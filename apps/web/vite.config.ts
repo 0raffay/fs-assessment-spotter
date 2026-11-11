@@ -14,6 +14,8 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
     },
+    // MapLibre 6 loads its worker by a URL relative to its own module; pre-bundling breaks that.
+    optimizeDeps: { exclude: ['maplibre-gl'] },
     server: {
       port: 5173,
       // Forward /api/* to Django in development, so no CORS setup is needed locally.

@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 
 import { AppShell, type StatusInfo } from '@/features/app-shell'
+import { TripMap } from '@/features/map'
 import {
   RouteList,
   RouteListError,
@@ -13,9 +14,11 @@ import { formatClock } from '@/lib/format'
 import { localTimeZone } from '@/lib/time'
 
 import { TripChip } from '../components/trip-chip'
+import { SheetAutoPeek } from '../components/sheet-auto-peek'
 import { TripPlannerPanel } from '../components/trip-planner-panel'
 import { TripPlannerProvider } from '../context/trip-planner-context'
 import { useTripPlanner } from '../context/trip-planner-store'
+import { useMapPadding } from '../hooks/use-map-padding'
 
 /** The single screen: header, map frame, and everything floating over the map. */
 export function TripPlannerPage() {
@@ -31,6 +34,7 @@ function PlannerScreen() {
   const isDesktop = useIsDesktop()
   const planQuery = useTripPlan(request)
   const plan = request ? planQuery.data : undefined
+  const padding = useMapPadding()
 
   let results: ReactNode = null
   let status: StatusInfo = { tone: 'idle', label: 'No trip planned yet' }
@@ -65,7 +69,15 @@ function PlannerScreen() {
       canShare={request !== null}
       status={status}
     >
+      <TripMap
+        padding={padding}
+        status={
+          plan ? 'ready' : request && planQuery.isPending ? 'loading' : request ? 'ready' : 'idle'
+        }
+        cardPlacement={isDesktop ? 'popup' : 'docked'}
+      />
       <TripPlannerPanel results={results} />
+      <SheetAutoPeek />
     </AppShell>
   )
 

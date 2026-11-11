@@ -1,8 +1,8 @@
 import { createContext, useContext } from 'react'
 
 /**
- * A React context that must be used inside its provider. Returns the provider and a hook typed as
- * `T` (never `T | undefined`), and the hook throws a clear error if the provider is missing.
+ * A typed React context. Returns the provider, a strict hook typed as `T` that throws a clear error
+ * outside the provider, and an optional hook (`T | null`) for components that also work without it.
  */
 export function createStrictContext<T>(name: string) {
   const Context = createContext<T | undefined>(undefined)
@@ -16,5 +16,9 @@ export function createStrictContext<T>(name: string) {
     return value
   }
 
-  return [Context.Provider, useStrictContext] as const
+  function useOptionalContext(): T | null {
+    return useContext(Context) ?? null
+  }
+
+  return [Context.Provider, useStrictContext, useOptionalContext] as const
 }
