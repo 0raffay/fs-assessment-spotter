@@ -1,9 +1,9 @@
 import { useId } from 'react'
 
-import type { Basemap } from '@/features/map'
+import { USGS_HYBRID_TILES, type Basemap } from '@/features/map'
 import { cn } from '@/lib/utils'
 
-type ConcreteBasemap = Exclude<Basemap, 'auto'>
+type DrawnStyle = 'dark' | 'light' | 'terrain'
 
 interface Palette {
   land: string
@@ -17,7 +17,7 @@ interface Palette {
 }
 
 /** Each CARTO style's own colors, simplified (Dark Matter, Positron, Voyager). */
-const PALETTES: Record<ConcreteBasemap, Palette> = {
+const PALETTES: Record<DrawnStyle, Palette> = {
   dark: {
     land: '#1b1e24',
     water: '#0c0e12',
@@ -78,11 +78,48 @@ function MiniMap({ palette }: { palette: Palette }) {
   )
 }
 
+/** One real imagery tile (Raton Pass area, zoom 11) for the satellite choice, like Google's. */
+const SATELLITE_PREVIEW = USGS_HYBRID_TILES.replace('{z}', '11')
+  .replace('{y}', '793')
+  .replace('{x}', '428')
+
 /**
- * A preview of a basemap for the layers panel. `auto` (follow the theme) shows the dark and light
- * maps split on the diagonal.
+ * A preview of a basemap for the layers panel. `auto` (the plain map, following the theme) shows
+ * the dark and light maps split on the diagonal; `satellite` shows a real imagery tile.
  */
 export function BasemapPreview({ basemap, className }: { basemap: Basemap; className?: string }) {
+  return basemap === 'satellite' ? (
+    <SatellitePreview className={className} />
+  ) : (
+    <DrawnPreview basemap={basemap} className={className} />
+  )
+}
+
+function SatellitePreview({ className }: { className?: string | undefined }) {
+  return (
+    <span aria-hidden className={cn('block bg-[#4a5240]', className)}>
+      <img
+        src={SATELLITE_PREVIEW}
+        alt=""
+        loading="lazy"
+        draggable={false}
+        className="size-full object-cover"
+        // The olive background stands in if the tile can't load.
+        onError={(event) => {
+          event.currentTarget.style.display = 'none'
+        }}
+      />
+    </span>
+  )
+}
+
+function DrawnPreview({
+  basemap,
+  className,
+}: {
+  basemap: Exclude<Basemap, 'satellite'>
+  className?: string | undefined
+}) {
   // useId() returns characters that need escaping inside url(#…); keep it to [a-z0-9-].
   const clipId = `basemap-clip-${useId().replace(/[^a-zA-Z0-9-]/g, '')}`
 

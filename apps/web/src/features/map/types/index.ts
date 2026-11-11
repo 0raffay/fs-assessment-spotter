@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 
-export const BASEMAPS = ['auto', 'dark', 'light', 'terrain'] as const
-/** `auto` follows the app theme. */
+export const BASEMAPS = ['auto', 'terrain', 'satellite'] as const
+/** `auto` is the plain map, dark or light with the app theme; `satellite` is USGS imagery + labels. */
 export type Basemap = (typeof BASEMAPS)[number]
 
 /** Space (px) kept clear on each side when fitting routes, so panels never hide them. */

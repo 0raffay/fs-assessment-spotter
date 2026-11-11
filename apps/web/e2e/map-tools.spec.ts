@@ -28,6 +28,20 @@ test.describe('map tools', () => {
     await expect(panel).toBeHidden()
   })
 
+  test('switches to the satellite view', async ({ page }) => {
+    await openTool(page, 'Map layers')
+    const panel = page.getByRole('region', { name: 'Map layers' })
+    const imagery = page.waitForRequest(/basemap\.nationalmap\.gov\/.+\/tile\//)
+    await panel.getByRole('radio', { name: 'Satellite' }).click()
+    await expect(panel.getByRole('radio', { name: 'Satellite' })).toHaveAttribute(
+      'aria-checked',
+      'true',
+    )
+    // The map asks USGS for imagery tiles (we check the request, not the CDN's answer).
+    await imagery
+    await expect(page.getByText(/USGS The National Map/)).toBeAttached()
+  })
+
   test('shows the legend', async ({ page }) => {
     await openTool(page, 'Legend')
     const legend = page.getByRole('region', { name: 'Legend' })

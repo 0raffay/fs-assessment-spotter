@@ -9,7 +9,7 @@ import { useOptionalRouteSelection } from '@/features/routes'
 import { useTheme } from '@/lib/theme'
 import { panelTransition } from '@/lib/motion'
 
-import { basemapStyleUrl } from '../lib/basemaps'
+import { basemapStyle, SATELLITE_IMAGERY_LAYER, SATELLITE_LABELS_LAYER } from '../lib/basemaps'
 import { routesBounds } from '../lib/geojson'
 import { clampPadding } from '../lib/padding'
 import { ROUTE_LAYER_IDS } from '../lib/layers'
@@ -81,10 +81,26 @@ export function TripMap({
   useEffect(() => {
     const map = mapRef.current?.getMap()
     if (!map || !loaded) return
-    for (const layer of map.getStyle().layers) {
-      if (layer.type === 'symbol' && !layer.id.startsWith('route')) {
-        map.setLayoutProperty(layer.id, 'visibility', layers.placeLabels ? 'visible' : 'none')
+    const shown = layers.placeLabels ? 'visible' : 'none'
+    const hidden = layers.placeLabels ? 'none' : 'visible'
+    const apply = () => {
+      for (const layer of map.getStyle()?.layers ?? []) {
+        const isLabel =
+          (layer.type === 'symbol' && !layer.id.startsWith('route')) ||
+          layer.id === SATELLITE_LABELS_LAYER
+        // Satellite's plain imagery stands in only while the labelled imagery is hidden.
+        const next = isLabel ? shown : layer.id === SATELLITE_IMAGERY_LAYER ? hidden : null
+        // Only write on a change: setLayoutProperty fires `styledata` itself.
+        if (next && map.getLayoutProperty(layer.id, 'visibility') !== next) {
+          map.setLayoutProperty(layer.id, 'visibility', next)
+        }
       }
+    }
+    apply()
+    // A basemap or theme switch replaces the style (and its label layers) once it loads.
+    map.on('styledata', apply)
+    return () => {
+      map.off('styledata', apply)
     }
   }, [layers.placeLabels, loaded, basemap, theme])
 
@@ -150,7 +166,7 @@ export function TripMap({
         id={TRIP_MAP_ID}
         ref={mapRef}
         initialViewState={INITIAL_VIEW}
-        mapStyle={basemapStyleUrl(basemap, theme)}
+        mapStyle={basemapStyle(basemap, theme)}
         onLoad={() => setLoaded(true)}
         interactiveLayerIds={[...ROUTE_LAYER_IDS]}
         cursor={cursor}
@@ -171,6 +187,7 @@ export function TripMap({
             routes={plan.routes}
             selectedId={selectedRoute.id}
             showAlternates={layers.alternateRoutes}
+            onImagery={basemap === 'satellite'}
           />
         ) : null}
         {/* After the route lines: injected layers (the heatmap) anchor beneath them with `beforeId`,

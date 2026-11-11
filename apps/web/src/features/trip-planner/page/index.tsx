@@ -49,6 +49,9 @@ export function TripPlannerPage() {
   )
 }
 
+/** Heatmap opacity multiplier over satellite imagery. */
+const SATELLITE_HEATMAP_BOOST = 1.4
+
 function useLayoutKind(): LayoutKind {
   const isDesktop = useIsDesktop()
   const isTablet = useMediaQuery('(min-width: 768px)')
@@ -152,7 +155,10 @@ function PlanScreen({ plan, layout }: { plan: TripPlan; layout: LayoutKind }) {
             heatmap={heatmapQuery.data}
             hour={forecast.hour}
             measure={tools.heatmap.measure}
-            opacity={tools.heatmap.opacity}
+            // Imagery is busier than a flat map; lift the heatmap so risk still reads.
+            opacity={
+              tools.heatmap.opacity * (tools.basemap === 'satellite' ? SATELLITE_HEATMAP_BOOST : 1)
+            }
             visible={tools.heatmap.visible}
             beforeId="route-lines-alternate"
           />

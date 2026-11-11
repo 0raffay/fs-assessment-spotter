@@ -11,13 +11,22 @@ interface RouteLinesProps {
   routes: readonly Route[]
   selectedId: RouteId
   showAlternates: boolean
+  /** Over satellite imagery: white alternates and a dark casing so lines read on any terrain. */
+  onImagery?: boolean
 }
+
+const IMAGERY = { alternate: '#f4f6f8', casing: '#0b0d12' } as const
 
 /**
  * Alternates in gray underneath; the selected route in sky blue with a canvas casing and chevrons
  * showing the direction of travel.
  */
-export function RouteLines({ routes, selectedId, showAlternates }: RouteLinesProps) {
+export function RouteLines({
+  routes,
+  selectedId,
+  showAlternates,
+  onImagery = false,
+}: RouteLinesProps) {
   const colors = useCssVariables(['--route-selected', '--route-alternate', '--canvas'])
   const data = routesToFeatureCollection(routes, selectedId)
   const { current: map } = useMap()
@@ -36,9 +45,9 @@ export function RouteLines({ routes, selectedId, showAlternates }: RouteLinesPro
           visibility: showAlternates ? 'visible' : 'none',
         }}
         paint={{
-          'line-color': colors['--route-alternate'],
+          'line-color': onImagery ? IMAGERY.alternate : colors['--route-alternate'],
           'line-width': 3.5,
-          'line-opacity': 0.9,
+          'line-opacity': onImagery ? 0.75 : 0.9,
         }}
       />
       <Layer
@@ -46,7 +55,10 @@ export function RouteLines({ routes, selectedId, showAlternates }: RouteLinesPro
         type="line"
         filter={['==', ['get', 'selected'], true]}
         layout={{ 'line-join': 'round', 'line-cap': 'round' }}
-        paint={{ 'line-color': colors['--canvas'], 'line-width': 10 }}
+        paint={{
+          'line-color': onImagery ? IMAGERY.casing : colors['--canvas'],
+          'line-width': 10,
+        }}
       />
       <Layer
         id="route-lines-selected"

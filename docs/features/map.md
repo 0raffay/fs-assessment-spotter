@@ -3,8 +3,16 @@
 The map that fills the frame: basemap, the three routes, checkpoints and the checkpoint card.
 
 - **Library:** MapLibre GL 6 through `react-map-gl/maplibre`.
-- **Basemaps (CARTO, no key):** Dark Matter (dark theme), Positron (light theme), Voyager
-  ("terrain"). `basemap="auto"` follows the theme.
+- **Basemaps:**
+  - **Map** (`auto`, follows the theme): CARTO Dark Matter or Positron.
+  - **Terrain:** CARTO Voyager.
+  - **Satellite:** USGS National Map orthoimagery, with CARTO's labels-only raster on top.
+    - The imagery is US public domain, needs no key, covers only the US, and has detail to zoom 16.
+    - It's a style object built in `lib/basemaps.ts`, not a URL.
+    - On imagery, alternate routes turn white, the selected route gets a dark casing, and the
+      heatmap is 1.4× stronger.
+    - "Place labels" also hides the labels raster.
+  - No basemap needs a key. Attribution is shown in the map corner.
 - **Routes:** one GeoJSON source. Alternates are drawn in gray underneath; the selected route is sky
   blue with a canvas casing and white chevrons pointing the way (`route-lines-arrows`, a symbol layer
   whose image is drawn on a canvas and re-added on `styleimagemissing` after style changes).
@@ -18,6 +26,9 @@ The map that fills the frame: basemap, the three routes, checkpoints and the che
     "Thu 06:00 MST", and "Arrive · Houston, TX" over the selected route's arrival time in the
     destination's zone.
   - They sit above the checkpoint dots.
+  - Each label sits to the right of its pin, or to the left when the pin is in the right half of
+    the map, so it never runs off the edge. This is re-checked after every move. The marker keeps a
+    fixed center anchor (react-map-gl reads `anchor` only once), and the label is placed with CSS.
 - **Fit:**
   - On a new plan, the map fits all routes into the area the floating UI leaves clear
     (`useMapPadding` in `trip-planner`).

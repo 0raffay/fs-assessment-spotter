@@ -5,13 +5,13 @@ requests. It holds view settings that the map, forecast and checkpoint features 
 
 ## State (`MapToolsProvider`)
 
-| Field           | Type                                | Default                | Read by                   |
-| --------------- | ----------------------------------- | ---------------------- | ------------------------- |
-| `activePanel`   | `MapPanel \| null`                  | `null`                 | overlay, rail, sheet peek |
-| `isProfileOpen` | `boolean`                           | `false`                | rail, page (bottom dock)  |
-| `basemap`       | `Basemap` (auto/dark/light/terrain) | `auto` (follows theme) | `TripMap`                 |
-| `layers`        | `MapLayerVisibility`                | all on                 | `TripMap`                 |
-| `heatmap`       | `{ visible, measure, opacity }`     | on, `risk`, 1          | `HeatmapLayer`            |
+| Field           | Type                               | Default                | Read by                   |
+| --------------- | ---------------------------------- | ---------------------- | ------------------------- |
+| `activePanel`   | `MapPanel \| null`                 | `null`                 | overlay, rail, sheet peek |
+| `isProfileOpen` | `boolean`                          | `false`                | rail, page (bottom dock)  |
+| `basemap`       | `Basemap` (auto/terrain/satellite) | `auto` (follows theme) | `TripMap`                 |
+| `layers`        | `MapLayerVisibility`               | all on                 | `TripMap`                 |
+| `heatmap`       | `{ visible, measure, opacity }`    | on, `risk`, 1          | `HeatmapLayer`            |
 
 - `MAP_PANELS` are the side panels (`layers`, `legend`, `checkpoints`). `togglePanel(id)` opens
   one at a time. Pressing the same button again or Escape closes it.
@@ -35,11 +35,12 @@ requests. It holds view settings that the map, forecast and checkpoint features 
   - Plan tools are disabled until a plan exists.
 - **`LayersPanel`:** the heatmap switch, a measure segment (Risk / Wind / Rain / Snow), an opacity
   slider (20 to 150%), switches for alternate routes, checkpoints, route numbers and place labels,
-  and basemap choices (a radio group).
-  - Each choice is a `BasemapPreview`: a tiny SVG map (water, park, roads, highway, city) in that
-    CARTO style's palette.
-  - "Theme" splits the dark and light maps on the diagonal. The selected tile gets a sky ring and
-    a check.
+  and basemap choices (a radio group): Map, Terrain, Satellite, as in Google Maps.
+  - Each choice is a `BasemapPreview`. Map and Terrain are tiny SVG maps (water, park, roads,
+    highway, city) in their CARTO palettes; Map splits the dark and light maps on the diagonal.
+  - Satellite is a real USGS imagery tile (Raton Pass area), with an olive fallback if it can't
+    load.
+  - The selected tile gets a sky ring and a check.
 - **`LegendPanel`:** risk levels with their colours and the map symbols.
 - **`MapToolsOverlay`:** the rail plus the open side panel beside it. Other features pass their
   panels through `extraPanels` (the checkpoint list).

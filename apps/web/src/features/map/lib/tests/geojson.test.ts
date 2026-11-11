@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import { fixturePlan } from '@/tests/fixtures'
 
-import { basemapStyleUrl } from '../basemaps'
+import { basemapStyle, SATELLITE_LABELS_LAYER } from '../basemaps'
 import { lineMidpoint, routesBounds, routesToFeatureCollection } from '../geojson'
 
 describe('map geojson helpers', () => {
@@ -33,8 +33,18 @@ describe('map geojson helpers', () => {
   })
 
   it('follows the theme for the auto basemap', () => {
-    expect(basemapStyleUrl('auto', 'dark')).toContain('dark-matter')
-    expect(basemapStyleUrl('auto', 'light')).toContain('positron')
-    expect(basemapStyleUrl('terrain', 'dark')).toContain('voyager')
+    expect(basemapStyle('auto', 'dark')).toContain('dark-matter')
+    expect(basemapStyle('auto', 'light')).toContain('positron')
+    expect(basemapStyle('terrain', 'dark')).toContain('voyager')
+
+    // Satellite is a style object: USGS imagery under a labels layer, the same in both themes.
+    const satellite = basemapStyle('satellite', 'light')
+    expect(typeof satellite).toBe('object')
+    if (typeof satellite === 'string') return
+    expect(satellite).toBe(basemapStyle('satellite', 'dark'))
+    expect(JSON.stringify(satellite.sources)).toContain('USGSImageryTopo')
+    // No CARTO raster labels: from a browser they're stamped "API KEY REQUIRED".
+    expect(JSON.stringify(satellite)).not.toContain('cartocdn')
+    expect(satellite.layers.at(-1)?.id).toBe(SATELLITE_LABELS_LAYER)
   })
 })

@@ -506,7 +506,7 @@ Before a trip is planned, the rail is disabled at 40% opacity.
 
 - **`layers-panel`** (`ui/switch`, `ui/toggle-group`, `ui/slider`): heatmap switch; heatmap measure
   `Risk | Wind | Rain | Snow`; opacity slider; switches for alternate routes, checkpoints, route
-  numbers and city labels; basemap choice (Dark, Light, Terrain) as preview tiles.
+  numbers and city labels; basemap choice (Map, Terrain, Satellite) as preview tiles: drawn mini maps for Map and Terrain, a real imagery tile for Satellite.
 - **`checkpoint-list`** (`ui/scroll-area`, `ui/toggle-group`): "Checkpoints" with "Route 1 · 39
   stops, every 25 mi"; filter `All | Moderate+ | High+`; rows of mile (mono), ETA, the condition
   that drives the level, and the risk label. The selected row is highlighted and synced with the

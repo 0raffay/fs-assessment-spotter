@@ -28,10 +28,9 @@ const LAYER_LABELS: Record<keyof MapLayerVisibility, string> = {
 }
 
 const BASEMAP_OPTIONS: readonly { id: Basemap; label: string }[] = [
-  { id: 'auto', label: 'Theme' },
-  { id: 'dark', label: 'Dark' },
-  { id: 'light', label: 'Light' },
+  { id: 'auto', label: 'Map' },
   { id: 'terrain', label: 'Terrain' },
+  { id: 'satellite', label: 'Satellite' },
 ]
 
 const SEGMENT_ITEM =
@@ -125,7 +124,7 @@ export function LayersPanel() {
         <span id={`${id}-basemap`} className="text-ink-subtle text-[13px]">
           Basemap
         </span>
-        <div role="radiogroup" aria-labelledby={`${id}-basemap`} className="grid grid-cols-4 gap-2">
+        <div role="radiogroup" aria-labelledby={`${id}-basemap`} className="grid grid-cols-3 gap-2">
           {BASEMAP_OPTIONS.map((option) => {
             const selected = option.id === basemap
             return (
