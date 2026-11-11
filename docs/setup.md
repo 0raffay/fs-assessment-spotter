@@ -52,13 +52,15 @@ cp apps/web/.env.example apps/web/.env
 | `CACHE_URL`            | in-memory                       | e.g. `redis://localhost:6379/0`                                                                                                         |
 | `CSRF_TRUSTED_ORIGINS` | none                            | Production only                                                                                                                         |
 | `HERE_API_KEY`         | empty                           | HERE routing + geocoding key, from [platform.here.com](https://platform.here.com) (Access Manager → Apps → API Keys). Server-side only. |
+| `SKYRIG_PROVIDERS`     | `live`                          | `fake` swaps HERE and Open-Meteo for offline stand-ins (no keys or network; used by tests and `pnpm test:e2e:django`)                   |
 
 **Frontend (`apps/web/.env`)**
 
-| Variable                | Default                 | Purpose                                       |
-| ----------------------- | ----------------------- | --------------------------------------------- |
-| `VITE_API_PROXY_TARGET` | `http://127.0.0.1:8000` | Where the dev server forwards `/api` requests |
-| `VITE_API_BASE_URL`     | `/api`                  | Production: full URL of the deployed API      |
+| Variable                | Default                 | Purpose                                                    |
+| ----------------------- | ----------------------- | ---------------------------------------------------------- |
+| `VITE_API_PROXY_TARGET` | `http://127.0.0.1:8000` | Where the dev server forwards `/api` requests              |
+| `VITE_API_BASE_URL`     | `/api`                  | Production: full URL of the deployed API                   |
+| `VITE_ENABLE_MOCKS`     | `true`                  | `true`: in-browser MSW mocks; `false`: the real Django API |
 
 ## 4. Run
 
@@ -99,5 +101,12 @@ Choose another one with `DJANGO_SETTINGS_MODULE`.
 - **Vite starts on 5174 instead of 5173:** another program is using port 5173. Either stop it,
   or add the new origin to `CORS_ALLOWED_ORIGINS`. The proxy works on any port.
 - **`uv: command not found`:** see the Windows note above about `PATH`.
+- **Django says "You don't have permission to access that port" on 8000:** another program
+  (often Docker Desktop) holds the port. Run the API elsewhere, e.g.
+  `python manage.py runserver 127.0.0.1:8010`, and set `VITE_API_PROXY_TARGET=http://127.0.0.1:8010`
+  in `apps/web/.env`.
+- **"Forecast unavailable … busy (free-tier limit)":** Open-Meteo's free tier allows ~600
+  locations a minute. A long trip's plan and heatmap use a few hundred, so many plans in a row can
+  hit it. Wait a minute and press Retry, or develop with `SKYRIG_PROVIDERS=fake`.
 - **Frontend tests fail on startup with an `undici` error:** `jsdom` is pinned to v26 on
   purpose. Newer versions need Node ≥ 22.15.

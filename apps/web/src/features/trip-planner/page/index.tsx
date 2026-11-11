@@ -189,6 +189,9 @@ function PlanScreen({ plan, layout }: { plan: TripPlan; layout: LayoutKind }) {
         <ForecastDock
           heatmap={heatmapQuery.data}
           isLoading={heatmapQuery.isPending}
+          error={heatmapQuery.error}
+          onRetry={() => void heatmapQuery.refetch()}
+          retrying={heatmapQuery.isFetching}
           departureAt={selectedRoute.departureAt}
           arrivalAt={selectedRoute.arrivalAt}
           timeZone={plan.request.origin.timeZone}

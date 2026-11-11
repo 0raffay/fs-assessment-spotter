@@ -1,8 +1,15 @@
 import { AnimatePresence, motion } from 'motion/react'
-import { ChevronUpIcon, ClockIcon, LoaderCircleIcon } from 'lucide-react'
+import {
+  ChevronUpIcon,
+  ClockIcon,
+  LoaderCircleIcon,
+  RotateCwIcon,
+  TriangleAlertIcon,
+} from 'lucide-react'
 import type { CSSProperties, Ref } from 'react'
 
 import { FloatingPanel } from '@/components/floating-panel'
+import { toApiError } from '@/lib/api'
 import { panelVariants } from '@/lib/motion'
 
 import { useForecast } from '../context/forecast-store'
@@ -14,6 +21,10 @@ import { ForecastPanel } from './forecast-panel'
 interface ForecastDockProps {
   heatmap: Heatmap | undefined
   isLoading: boolean
+  /** Set when the heatmap request failed; the dock then offers a retry instead of a spinner. */
+  error?: unknown
+  onRetry?: () => void
+  retrying?: boolean
   departureAt: string
   arrivalAt: string
   timeZone: string
@@ -28,6 +39,9 @@ interface ForecastDockProps {
 export function ForecastDock({
   heatmap,
   isLoading,
+  error,
+  onRetry,
+  retrying = false,
   departureAt,
   arrivalAt,
   timeZone,
@@ -36,6 +50,8 @@ export function ForecastDock({
   ref,
 }: ForecastDockProps) {
   const { isOpen, setOpen, hour } = useForecast()
+  const failed = Boolean(error) && !heatmap && !retrying
+  const message = failed ? toApiError(error).userMessage : ''
 
   return (
     <div ref={ref} className="pointer-events-none absolute z-20 flex justify-center" style={style}>
@@ -55,6 +71,33 @@ export function ForecastDock({
               compact={compact}
             />
           </FloatingPanel>
+        ) : failed ? (
+          <motion.div
+            key="error"
+            role="alert"
+            variants={panelVariants('up')}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            className="border-hairline-strong bg-surface-2 pointer-events-auto flex min-h-[42px] max-w-full items-center gap-2.5 rounded-full border py-1 pr-1 pl-3.5 shadow-[0_18px_44px_rgb(0_0_0/0.5)]"
+          >
+            <TriangleAlertIcon className="text-risk-high size-4 shrink-0" strokeWidth={1.75} />
+            <span className="min-w-0 text-sm">
+              <span className="font-medium">Forecast unavailable</span>
+              <span className="text-ink-subtle hidden md:inline"> · {message}</span>
+              <span className="sr-only md:hidden"> {message}</span>
+            </span>
+            {onRetry ? (
+              <button
+                type="button"
+                onClick={onRetry}
+                className="bg-surface-3 hover:bg-surface-4 focus-visible:ring-ring/45 flex h-[34px] shrink-0 items-center gap-1.5 rounded-full px-3 text-sm transition-[background-color,transform] outline-none focus-visible:ring-3 active:scale-[0.97]"
+              >
+                <RotateCwIcon className="size-3.5" strokeWidth={1.75} />
+                Retry
+              </button>
+            ) : null}
+          </motion.div>
         ) : (
           <motion.button
             key="chip"

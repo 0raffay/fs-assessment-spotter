@@ -25,6 +25,9 @@ INSTALLED_APPS = [
     "rest_framework",
     # Local
     "apps.core",
+    "apps.risk",
+    "apps.weather",
+    "apps.routing",
 ]
 
 MIDDLEWARE = [
@@ -92,6 +95,9 @@ CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS", default=[])
 
 # Third-party APIs. Keys stay on the server; empty means "not configured".
 HERE_API_KEY = env("HERE_API_KEY", default="")
+# "live" uses HERE and Open-Meteo; "fake" uses deterministic offline stand-ins (development without
+# keys, and end-to-end tests).
+SKYRIG_PROVIDERS = env("SKYRIG_PROVIDERS", default="live")
 
 REST_FRAMEWORK = {
     "DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRenderer"],
@@ -99,4 +105,5 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [],
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.AllowAny"],
     "UNAUTHENTICATED_USER": None,
+    "EXCEPTION_HANDLER": "apps.core.api.exceptions.exception_handler",
 }

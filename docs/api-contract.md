@@ -19,7 +19,19 @@ it and every response before using it, and mocks are validated against the same 
   place's `timeZone`.
 - **Units:** miles, minutes, mph, inches per hour, pounds.
 - **Errors:** any non-2xx response has the body `{ "detail": string, "code"?: string,
-"fieldErrors"?: { [field]: string[] } }`. Validation errors are 400 and include `fieldErrors`.
+"fieldErrors"?: { [field]: string[] } }`.
+  - `detail` is a plain sentence the UI shows as-is. For validation errors it's the first field's
+    message.
+  - The codes:
+
+| Status | `code`             | When                                                                           |
+| ------ | ------------------ | ------------------------------------------------------------------------------ |
+| 400    | `invalid`          | Validation failed; `fieldErrors` holds every message (`origin.coordinates`, …) |
+| 400    | `no_route`         | No truck route connects the two places                                         |
+| 400    | `area_too_large`   | Heatmap area over ~2,400 cells                                                 |
+| 502    | `provider_error`   | HERE or Open-Meteo failed or answered with an error                            |
+| 503    | `provider_timeout` | A provider took too long                                                       |
+| 503    | `provider_busy`    | A provider's rate limit was hit (Open-Meteo's free tier); retry in a minute    |
 
 ## Shared objects
 
@@ -46,6 +58,10 @@ Location search for the origin and destination fields.
 | Query | Type   | Notes            |
 | ----- | ------ | ---------------- |
 | `q`   | string | 2–100 characters |
+
+Town names ("Dalla", "Springfield, MO") are matched offline against a bundled list of US places,
+biggest first. Queries with digits (ZIPs, street addresses), or with no town match, go to HERE.
+Ids are `geonames:…` or `here:…`.
 
 Response `200`:
 
@@ -130,18 +146,19 @@ type ReasonFact =
   | { kind: 'time_vs_fastest'; deltaMinutes: number }
 ```
 
-Errors: `400` for invalid input (e.g. same origin and destination), `502` when the routing or
-weather provider fails, `503` when it times out.
+Errors: `400` for invalid input (e.g. same origin and destination, or a departure in the past),
+`502` when the routing or weather provider fails, and `503` when it times out or is rate limited.
 
 ## `GET /api/weather/heatmap/`
 
 Hourly risk grid for the forecast slider (hours 0–48 from `forecastIssuedAt`).
 
-| Query                            | Type   | Notes                                      |
-| -------------------------------- | ------ | ------------------------------------------ |
-| `west`, `south`, `east`, `north` | number | The plan's `bbox`                          |
-| `hours`                          | int    | 1–48 (default 48)                          |
-| `loadWeightLb`                   | int    | Needed because load rules change wind risk |
+| Query                            | Type   | Notes                                                                                                                                       |
+| -------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `west`, `south`, `east`, `north` | number | The plan's `bbox`                                                                                                                           |
+| `hours`                          | int    | 1–48 (default 48)                                                                                                                           |
+| `loadWeightLb`                   | int    | Needed because load rules change wind risk                                                                                                  |
+| `planId`                         | string | Optional. Only the cells within ~1° of that plan's routes are returned (and fetched); unknown or expired ids (after 1 h) get the whole area |
 
 Response `200`:
 

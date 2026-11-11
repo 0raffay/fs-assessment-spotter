@@ -15,6 +15,7 @@
     "format": "pnpm --filter web format && pnpm api:format",
     "test": "pnpm --filter web test && pnpm api:test",
     "test:e2e": "pnpm --filter web test:e2e",
+    "test:e2e:django": "pnpm --filter web test:e2e:django",
     "web:dev": "pnpm --filter web dev",
     "web:lint": "pnpm --filter web lint",
     "api:sync": "uv sync --directory apps/api",

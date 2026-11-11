@@ -17,6 +17,8 @@ export const heatmapQuerySchema = z.object({
   north: z.coerce.number().min(-90).max(90),
   hours: z.coerce.number().int().min(1).max(FORECAST_HOURS).default(FORECAST_HOURS),
   loadWeightLb: z.coerce.number().int().positive(),
+  /** The plan this heatmap is for: the API then fetches only the cells along its routes. */
+  planId: z.string().min(1).max(64).optional(),
 })
 export type HeatmapQuery = z.input<typeof heatmapQuerySchema>
 

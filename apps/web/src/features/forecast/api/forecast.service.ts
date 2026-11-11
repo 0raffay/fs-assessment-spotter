@@ -17,6 +17,7 @@ export class ForecastService {
         north,
         hours: FORECAST_HOURS,
         loadWeightLb: plan.request.loadWeightLb,
+        planId: plan.id,
       },
       signal,
     })

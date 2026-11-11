@@ -11,3 +11,5 @@ CACHES = {"default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"
 PASSWORD_HASHERS = ["django.contrib.auth.hashers.MD5PasswordHasher"]
 # Serve static files from app dirs (no collectstatic needed in tests).
 WHITENOISE_AUTOREFRESH = True
+# Never call real providers from tests.
+SKYRIG_PROVIDERS = "fake"
