@@ -15,4 +15,5 @@ Plans the trip (`POST /api/routes/plan/`) and shows the three ranked routes.
 - **Shared:** `components/risk-badge.tsx` (`RiskBadge`, `RiskDot`), `tests/fixtures.ts`.
 - **Tests:** reason formatting, list selection and peek, `useTripPlan` success and error.
 
-Not yet browser-verified (usage limit reached mid-check).
+Verified in the browser: skeleton → ranked cards, selection, reason chips, No Travel notes. The
+mock storms were retuned to peak 8–36h out so "tomorrow" trips show varied risk.
