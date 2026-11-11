@@ -100,13 +100,16 @@ Rules:
 - **Branded ids** (`RouteId`, `CheckpointId`, `PlaceId`) stop ids of different things being mixed up.
 - TypeScript runs with `strict`, `noUncheckedIndexedAccess` and `noImplicitOverride`.
 
-## Mocks: switching to the real API
+## Mocks and the real API
 
-1. Build the Django endpoints to match `docs/api-contract.md`.
-2. Set `VITE_ENABLE_MOCKS=false` in `apps/web/.env` and run `pnpm dev`.
-
-That's all: no feature code changes. `src/mocks/` and the `*.mock.ts` files can then be deleted
-(tests use MSW too, so keep them if you want hermetic tests).
+- **Development:** mocks are on by default (`VITE_ENABLE_MOCKS` defaults to `true` in dev). Set
+  `VITE_ENABLE_MOCKS=false` in `apps/web/.env` to use the Django API through the Vite proxy. No
+  feature code changes.
+- **Production builds:** mocks are off by default, so a deploy can't ship fake data
+  (`docs/deployment.md`).
+- **Tests:** Vitest always uses the mocks. Playwright runs against the mocks (`pnpm test:e2e`) or
+  the real API with offline providers (`pnpm test:e2e:django`).
+- The mocks (`src/mocks/`, `*.mock.ts`) stay as hermetic test fixtures.
 
 ## Tests
 

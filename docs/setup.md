@@ -56,11 +56,11 @@ cp apps/web/.env.example apps/web/.env
 
 **Frontend (`apps/web/.env`)**
 
-| Variable                | Default                 | Purpose                                                    |
-| ----------------------- | ----------------------- | ---------------------------------------------------------- |
-| `VITE_API_PROXY_TARGET` | `http://127.0.0.1:8000` | Where the dev server forwards `/api` requests              |
-| `VITE_API_BASE_URL`     | `/api`                  | Production: full URL of the deployed API                   |
-| `VITE_ENABLE_MOCKS`     | `true`                  | `true`: in-browser MSW mocks; `false`: the real Django API |
+| Variable                | Default                                     | Purpose                                                    |
+| ----------------------- | ------------------------------------------- | ---------------------------------------------------------- |
+| `VITE_API_PROXY_TARGET` | `http://127.0.0.1:8000`                     | Where the dev server forwards `/api` requests              |
+| `VITE_API_BASE_URL`     | `/api`                                      | Production: full URL of the deployed API                   |
+| `VITE_ENABLE_MOCKS`     | `true` in dev, `false` in production builds | `true`: in-browser MSW mocks; `false`: the real Django API |
 
 ## 4. Run
 
@@ -110,3 +110,7 @@ Choose another one with `DJANGO_SETTINGS_MODULE`.
   hit it. Wait a minute and press Retry, or develop with `SKYRIG_PROVIDERS=fake`.
 - **Frontend tests fail on startup with an `undici` error:** `jsdom` is pinned to v26 on
   purpose. Newer versions need Node ≥ 22.15.
+
+## Deploying
+
+See [deployment.md](deployment.md) (Render for the API, Vercel for the web app).

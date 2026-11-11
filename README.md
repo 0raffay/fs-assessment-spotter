@@ -123,6 +123,14 @@ set `VITE_ENABLE_MOCKS=true` in `apps/web/.env` to use the in-browser mocks.
 - [docs/frontend-structure.md](docs/frontend-structure.md): feature folders, api layer, `ROUTES`
 - [docs/backend-structure.md](docs/backend-structure.md): Django apps, api/services/clients layers
 - [docs/api-contract.md](docs/api-contract.md): the three endpoints, errors and codes
+- [docs/deployment.md](docs/deployment.md): deploying the API to Render and the web app to Vercel
+
+## Deployment
+
+The API deploys to **Render** from the [`render.yaml`](render.yaml) Blueprint, and the web app to
+**Vercel** (`apps/web`, with [`apps/web/vercel.json`](apps/web/vercel.json)). Production builds
+never use the mocks. [docs/deployment.md](docs/deployment.md) covers it step by step: environment
+variables, CORS, checks and free-tier notes.
 
 ## Repository layout (short)
 

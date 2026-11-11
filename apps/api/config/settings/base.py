@@ -92,6 +92,8 @@ STORAGES = {
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS", default=[])
+# Optional patterns, e.g. ^https://skyrig-[a-z0-9-]+\.vercel\.app$ for Vercel preview deployments.
+CORS_ALLOWED_ORIGIN_REGEXES = env.list("CORS_ALLOWED_ORIGIN_REGEXES", default=[])
 
 # Third-party APIs. Keys stay on the server; empty means "not configured".
 HERE_API_KEY = env("HERE_API_KEY", default="")

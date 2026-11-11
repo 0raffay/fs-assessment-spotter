@@ -1,0 +1,38 @@
+# Render Blueprint for the SkyRig API (docs/deployment.md).
+# Render → New → Blueprint → pick this repository. Values marked `sync: false` are asked for
+# once in the Render dashboard and never stored in git.
+services:
+  - type: web
+    name: skyrig-api
+    runtime: python
+    rootDir: apps/api
+    plan: free
+    buildCommand: >-
+      pip install uv &&
+      uv sync --frozen --no-dev &&
+      uv run python manage.py collectstatic --noinput &&
+      uv run python manage.py migrate --noinput
+    # One worker with threads: the in-memory cache (forecasts, heatmaps, plan corridors) is then
+    # shared by every request. Set CACHE_URL to Redis before adding workers.
+    startCommand: >-
+      uv run gunicorn config.wsgi:application
+      --bind 0.0.0.0:$PORT --workers 1 --threads 8 --timeout 60
+    healthCheckPath: /api/health/
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: DJANGO_SETTINGS_MODULE
+        value: config.settings.prod
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: SKYRIG_PROVIDERS
+        value: live
+      # Your HERE key (platform.here.com → Access Manager → Apps → API Keys).
+      - key: HERE_API_KEY
+        sync: false
+      # The Vercel URL of the frontend, e.g. https://skyrig.vercel.app (comma-separate several).
+      - key: CORS_ALLOWED_ORIGINS
+        sync: false
+      # Extra host names besides Render's own (which is allowed automatically). May stay empty.
+      - key: DJANGO_ALLOWED_HOSTS
+        sync: false
