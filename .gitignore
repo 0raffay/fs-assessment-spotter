@@ -16,6 +16,9 @@ dist/
 *.tsbuildinfo
 .vite/
 coverage/
+test-results/
+playwright-report/
+blob-report/
 
 # Python
 __pycache__/

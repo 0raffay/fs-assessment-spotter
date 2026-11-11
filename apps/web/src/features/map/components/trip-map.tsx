@@ -11,6 +11,7 @@ import { panelTransition } from '@/lib/motion'
 
 import { basemapStyleUrl } from '../lib/basemaps'
 import { routesBounds } from '../lib/geojson'
+import { clampPadding } from '../lib/padding'
 import { ROUTE_LAYER_IDS } from '../lib/layers'
 import { DEFAULT_LAYER_VISIBILITY, type TripMapProps } from '../types'
 
@@ -22,6 +23,9 @@ import { RouteLines } from './route-lines'
 export const TRIP_MAP_ID = 'trip'
 
 const INITIAL_VIEW = { longitude: -98.5, latitude: 38.8, zoom: 3.6 }
+
+/** Room the checkpoint card needs beside its marker: to the right (popup) or above (docked). */
+const CARD_ROOM = { popup: { right: 340, vertical: 200 }, docked: { top: 380 } } as const
 
 /**
  * The map: basemap, routes, tags, pins, checkpoint markers and the checkpoint card. Reads the
@@ -50,7 +54,13 @@ export function TripMap({
   const paddingKey = `${padding.top},${padding.right},${padding.bottom},${padding.left}`
   useEffect(() => {
     if (!plan || !loaded) return
-    mapRef.current?.fitBounds(routesBounds(plan.routes), { padding, duration: 900 })
+    const map = mapRef.current
+    if (!map) return
+    const { width, height } = map.getContainer().getBoundingClientRect()
+    map.fitBounds(routesBounds(plan.routes), {
+      padding: clampPadding(padding, width, height),
+      duration: 900,
+    })
     // `paddingKey` stands for `padding`.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [planId, paddingKey, loaded])
@@ -65,6 +75,33 @@ export function TripMap({
       }
     }
   }, [layers.placeLabels, loaded, basemap, theme])
+
+  // Bring a newly selected checkpoint into the clear area, with room for its card.
+  const checkpointId = checkpoint?.id
+  useEffect(() => {
+    const map = mapRef.current
+    if (!checkpoint || !loaded || !map) return
+    const { width, height } = map.getContainer().getBoundingClientRect()
+    const wanted =
+      cardPlacement === 'popup'
+        ? {
+            ...padding,
+            top: padding.top + CARD_ROOM.popup.vertical / 2,
+            right: padding.right + CARD_ROOM.popup.right,
+            bottom: padding.bottom + CARD_ROOM.popup.vertical / 2,
+          }
+        : { ...padding, top: Math.max(padding.top, CARD_ROOM.docked.top) }
+    const room = clampPadding(wanted, width, height, 48)
+    const point = map.project(checkpoint.coordinates)
+    const visible =
+      point.x >= room.left &&
+      point.x <= width - room.right &&
+      point.y >= room.top &&
+      point.y <= height - room.bottom
+    if (!visible) map.easeTo({ center: checkpoint.coordinates, padding: room, duration: 600 })
+    // Only when the selection changes; `checkpointId` stands for `checkpoint`.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [checkpointId, loaded])
 
   // Escape closes the checkpoint card.
   useEffect(() => {
@@ -110,14 +147,18 @@ export function TripMap({
         attributionControl={{ compact: true }}
         style={{ width: '100%', height: '100%' }}
       >
+        {plan && selectedRoute && selection ? (
+          <RouteLines
+            routes={plan.routes}
+            selectedId={selectedRoute.id}
+            showAlternates={layers.alternateRoutes}
+          />
+        ) : null}
+        {/* After the route lines: injected layers (the heatmap) anchor beneath them with `beforeId`,
+            and MapLibre needs that layer to exist first, including when a style change re-adds all. */}
         {children}
         {plan && selectedRoute && selection ? (
           <>
-            <RouteLines
-              routes={plan.routes}
-              selectedId={selectedRoute.id}
-              showAlternates={layers.alternateRoutes}
-            />
             <PlacePins origin={plan.request.origin} destination={plan.request.destination} />
             {layers.routeNumbers ? (
               <RouteTags

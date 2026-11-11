@@ -12,7 +12,7 @@ import type { ReactNode } from 'react'
 import { useMap } from 'react-map-gl/maplibre'
 
 import { useOptionalForecast } from '@/features/forecast'
-import { routesBounds, TRIP_MAP_ID, type MapPadding } from '@/features/map'
+import { clampPadding, routesBounds, TRIP_MAP_ID, type MapPadding } from '@/features/map'
 import { useOptionalRouteSelection } from '@/features/routes'
 
 import { useMapTools } from '../context/map-tools-store'
@@ -79,9 +79,14 @@ export function MapToolRail({ compact, fitPadding }: { compact: boolean; fitPadd
       icon: <MaximizeIcon className={ICON} strokeWidth={1.75} />,
       separated: true,
       disabled,
-      onSelect: () =>
-        selection &&
-        map?.fitBounds(routesBounds(selection.plan.routes), { padding: fitPadding, duration: 700 }),
+      onSelect: () => {
+        if (!selection || !map) return
+        const { width, height } = map.getContainer().getBoundingClientRect()
+        map.fitBounds(routesBounds(selection.plan.routes), {
+          padding: clampPadding(fitPadding, width, height),
+          duration: 700,
+        })
+      },
     },
     ...(compact
       ? []

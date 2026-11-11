@@ -112,8 +112,15 @@ That's all: no feature code changes. `src/mocks/` and the `*.mock.ts` files can 
 
 - **Unit and component tests:** Vitest + Testing Library, in a `tests/` folder next to the code.
   They use the same MSW handlers as the browser.
-- **End-to-end:** Playwright in `apps/web/e2e/`, against the mocked app, on desktop and mobile
-  viewports.
+- **End-to-end:** Playwright in `apps/web/e2e/`, against the mocked app (MSW in the browser), in
+  two projects: `desktop` (1440×900) and `phone` (Pixel 7). Specs cover:
+  - Planning: validation, three ranked routes, route selection, restoring from a shared link.
+  - Map tools: layers, legend, checkpoint list and card, filters, the desktop risk profile.
+  - The forecast slider, theme and help, and a map render with no page errors.
+  - `pnpm test:e2e` starts its own Vite server on port 5190 (reusing one locally).
+  - `PW_CHANNEL=msedge` (or `chrome`) runs on an installed browser instead of Playwright's
+    bundled one; otherwise run `pnpm --filter web exec playwright install chromium` once.
+  - The browser time zone is pinned to America/Chicago so clock labels are stable.
 
 ## Page routes: `lib/routes.ts`
 

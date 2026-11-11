@@ -4,3 +4,6 @@ pnpm-lock.yaml
 src/components/ui
 src/lib/utils.ts
 public/mockServiceWorker.js
+test-results
+playwright-report
+blob-report

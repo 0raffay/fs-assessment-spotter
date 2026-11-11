@@ -129,7 +129,7 @@ function PlanScreen({ plan, layout }: { plan: TripPlan; layout: LayoutKind }) {
     : forecast.isOpen
       ? FORECAST_PANEL_HEIGHT[compact ? 'compact' : 'desktop']
       : FORECAST_CHIP_HEIGHT
-  const padding = useMapPadding(dockHeight)
+  const padding = useMapPadding(dockHeight, tools.activePanel !== null)
   const dockStyle = bottomDockStyle(layout, isPanelOpen, sheetSnap)
 
   const status: StatusInfo = {

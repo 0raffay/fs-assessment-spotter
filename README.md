@@ -45,6 +45,7 @@ Open http://localhost:5173. The page should show **API status: ok**.
 | `pnpm lint`        | oxlint + Prettier check (web), Ruff (api)              |
 | `pnpm format`      | Auto-format both apps                                  |
 | `pnpm test`        | Vitest (web) + pytest (api)                            |
+| `pnpm test:e2e`    | Playwright end-to-end suite (web, mocked API)          |
 | `pnpm web:dev`     | Frontend dev server only                               |
 | `pnpm api:dev`     | Django dev server only                                 |
 | `pnpm api:migrate` | Apply Django migrations                                |
