@@ -8,14 +8,8 @@ import { useIsDesktop, useMediaQuery } from '@/hooks/use-media-query'
 import { cn } from '@/lib/utils'
 
 import { useTripPlanner } from '../context/trip-planner-store'
-import { SHEET_SNAPS, type SheetSnap } from '../types'
-
-/** Phone sheet heights; tablets keep the sheet tall beside the map. */
-const SNAP_HEIGHT: Record<SheetSnap, string> = {
-  peek: 'h-[168px]',
-  half: 'h-[min(460px,58%)]',
-  full: 'h-[calc(100%-16px)]',
-}
+import { SHEET_HEIGHT } from '../lib/layout'
+import { SHEET_SNAPS } from '../types'
 
 interface PlannerSurfaceProps {
   title: string
@@ -66,9 +60,10 @@ export function PlannerSurface({ title, children }: PlannerSurfaceProps) {
     <FloatingPanel
       from="up"
       aria-label="Trip planner"
+      style={isTablet ? undefined : { height: SHEET_HEIGHT[sheetSnap] }}
       className={cn(
         'absolute bottom-2 z-20 flex flex-col rounded-[20px] transition-[height] duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)]',
-        isTablet ? 'left-3 h-[calc(100%-24px)] w-[380px]' : cn('inset-x-2', SNAP_HEIGHT[sheetSnap]),
+        isTablet ? 'left-3 h-[calc(100%-24px)] w-[380px]' : 'inset-x-2',
       )}
     >
       {isTablet ? null : (
