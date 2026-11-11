@@ -15,12 +15,17 @@
   --font-mono: 'JetBrains Mono Variable', ui-monospace, 'SF Mono', Menlo, monospace;
 
   /* Radius scale (fixed values, not derived) */
-  --radius-xs: 4px;
-  --radius-sm: 6px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 12px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
   --radius-2xl: 24px;
+  --radius-3xl: 28px;
+
+  /* Motion (see DESIGN.md › Motion) */
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
 
   /* shadcn semantic colors */
   --color-background: var(--background);
@@ -56,6 +61,7 @@
   --color-sidebar-ring: var(--sidebar-ring);
 
   /* SkyRig extensions: surface ladder, ink scale, status */
+  --color-map: var(--map);
   --color-surface-1: var(--surface-1);
   --color-surface-2: var(--surface-2);
   --color-surface-3: var(--surface-3);
@@ -84,6 +90,7 @@
 /* Light theme (alternate) */
 :root {
   --canvas: #fbfbfc;
+  --map: #eef0f3;
   --surface-1: #ffffff;
   --surface-2: #f4f5f7;
   --surface-3: #eceef1;
@@ -131,7 +138,7 @@
   --chart-3: #0d9488;
   --chart-4: #64748b;
   --chart-5: #94a3b8;
-  --radius: 12px;
+  --radius: 14px;
   --sidebar: var(--surface-1);
   --sidebar-foreground: var(--ink);
   --sidebar-primary: var(--primary);
@@ -145,6 +152,7 @@
 /* Dark theme (default: <html class="dark">) */
 .dark {
   --canvas: #08090c;
+  --map: #0b0d12;
   --surface-1: #0f1115;
   --surface-2: #16181d;
   --surface-3: #1d2027;
