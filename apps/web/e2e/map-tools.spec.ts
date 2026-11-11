@@ -93,3 +93,42 @@ test.describe('risk profile (desktop)', () => {
     await expect(profile).toBeHidden()
   })
 })
+
+test('fit all routes frames the trip the same after a checkpoint pan', async ({
+  page,
+  isMobile,
+}) => {
+  test.skip(isMobile, 'The zoom buttons are desktop only')
+  await planDallasToDenver(page)
+  const tools = page.getByRole('toolbar', { name: 'Map tools' })
+  const fit = tools.getByRole('button', { name: 'Fit all routes' })
+  const pins = async () => {
+    await page.waitForTimeout(1200)
+    const start = await page.locator('[data-endpoint="start"]').boundingBox()
+    const arrive = await page.locator('[data-endpoint="arrive"]').boundingBox()
+    return { start: start!, arrive: arrive! }
+  }
+
+  await openTool(page, 'Checkpoint list')
+  await fit.click()
+  const clean = await pins()
+
+  // Zoom in so the last checkpoint is off-screen; selecting it pans the map. The pan used to leave
+  // padding on the map, which every later fit added to its own, zooming out (to the whole world on
+  // large layouts).
+  for (let i = 0; i < 3; i++) await tools.getByRole('button', { name: 'Zoom in' }).click()
+  await page
+    .getByRole('list', { name: /Checkpoints on route/ })
+    .getByRole('button')
+    .last()
+    .click()
+  await page.waitForTimeout(800)
+  await page.getByRole('button', { name: 'Close checkpoint', exact: true }).click()
+  await fit.click()
+  const after = await pins()
+
+  for (const end of ['start', 'arrive'] as const) {
+    expect(Math.abs(after[end].x - clean[end].x)).toBeLessThan(3)
+    expect(Math.abs(after[end].y - clean[end].y)).toBeLessThan(3)
+  }
+})

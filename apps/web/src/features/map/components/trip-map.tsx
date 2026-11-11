@@ -110,7 +110,14 @@ export function TripMap({
       point.x <= width - room.right &&
       point.y >= room.top &&
       point.y <= height - room.bottom
-    if (!visible) map.easeTo({ center: checkpoint.coordinates, padding: room, duration: 600 })
+    // Center it in the clear area with a one-off `offset`. Passing `padding` here would persist on
+    // the map and add to every later fitBounds padding, zooming "Fit all routes" out to the world.
+    if (!visible)
+      map.easeTo({
+        center: checkpoint.coordinates,
+        offset: [(room.left - room.right) / 2, (room.top - room.bottom) / 2],
+        duration: 600,
+      })
     // Only when the selection changes; `checkpointId` stands for `checkpoint`.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [checkpointId, loaded])

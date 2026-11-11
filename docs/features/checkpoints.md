@@ -32,6 +32,8 @@ profile, the map markers and the checkpoint card always show the same selection.
   - `onPicked` lets handheld layouts close the panel so the docked card is visible.
 - **`RiskProfile`:**
   - One strip per route; the selected route is taller.
+  - The recommended route's label has a sky star and a "Recommended" tag. Other rows reserve the
+    star's width so the labels line up.
   - Each segment is a button: clicking one on any route selects that route and checkpoint (via
     `selectCheckpoint(id, routeId)`).
   - A marker line and a "mi 350" pill track the selected checkpoint across all routes. With

@@ -1,4 +1,4 @@
-import { XIcon } from 'lucide-react'
+import { CheckIcon, XIcon } from 'lucide-react'
 import { useId } from 'react'
 
 import { IconButton } from '@/components/icon-button'
@@ -10,6 +10,8 @@ import type { Basemap, MapLayerVisibility } from '@/features/map'
 import { cn } from '@/lib/utils'
 
 import { useMapTools } from '../context/map-tools-store'
+
+import { BasemapPreview } from './basemap-preview'
 
 const MEASURE_LABELS: Record<HeatmapMeasure, string> = {
   risk: 'Risk',
@@ -25,11 +27,11 @@ const LAYER_LABELS: Record<keyof MapLayerVisibility, string> = {
   placeLabels: 'Place labels',
 }
 
-const BASEMAP_OPTIONS: readonly { id: Basemap; label: string; swatch: string }[] = [
-  { id: 'auto', label: 'Theme', swatch: 'bg-[linear-gradient(135deg,#0b0d12_50%,#e6e9ee_50%)]' },
-  { id: 'dark', label: 'Dark', swatch: 'bg-[#0b0d12] border border-hairline' },
-  { id: 'light', label: 'Light', swatch: 'bg-[#e6e9ee]' },
-  { id: 'terrain', label: 'Terrain', swatch: 'bg-[#d9e4d2]' },
+const BASEMAP_OPTIONS: readonly { id: Basemap; label: string }[] = [
+  { id: 'auto', label: 'Theme' },
+  { id: 'dark', label: 'Dark' },
+  { id: 'light', label: 'Light' },
+  { id: 'terrain', label: 'Terrain' },
 ]
 
 const SEGMENT_ITEM =
@@ -134,12 +136,24 @@ export function LayersPanel() {
                 aria-checked={selected}
                 onClick={() => setBasemap(option.id)}
                 className={cn(
-                  'flex flex-col gap-1.5 rounded-2xl border p-1 pb-1.5 text-xs transition-[border-color,background-color,transform] outline-none active:scale-[0.97]',
+                  'group/basemap flex flex-col gap-1.5 rounded-2xl border p-1 pb-1.5 text-xs transition-[border-color,background-color,box-shadow,transform] outline-none active:scale-[0.97]',
                   'focus-visible:ring-ring/45 hover:bg-surface-2 focus-visible:ring-3',
-                  selected ? 'border-primary text-ink' : 'border-hairline-strong text-ink-subtle',
+                  selected
+                    ? 'border-primary text-ink ring-primary/25 font-medium ring-2'
+                    : 'border-hairline-strong text-ink-subtle hover:text-ink',
                 )}
               >
-                <span className={cn('h-10 rounded-xl', option.swatch)} />
+                <span className="relative overflow-hidden rounded-xl">
+                  <BasemapPreview
+                    basemap={option.id}
+                    className="h-10 w-full transition-transform duration-300 group-hover/basemap:scale-110"
+                  />
+                  {selected ? (
+                    <span className="bg-primary text-primary-foreground absolute top-1 right-1 grid size-4 place-items-center rounded-full shadow-[0_1px_4px_rgb(0_0_0/0.35)]">
+                      <CheckIcon className="size-2.5" strokeWidth={3} />
+                    </span>
+                  ) : null}
+                </span>
                 {option.label}
               </button>
             )

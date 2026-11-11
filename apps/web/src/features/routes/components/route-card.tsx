@@ -59,11 +59,30 @@ export function RouteCard({ route, selected, onSelect, reasons, compact = false 
         </span>
       </span>
 
+      <span className="-mt-1.5 flex flex-wrap justify-end gap-1.5 empty:hidden">
+        {route.isRecommended ? (
+          <span className="bg-primary/14 text-primary inline-flex items-center gap-1 rounded-full px-2.5 py-[3px] text-xs font-medium whitespace-nowrap">
+            <CheckIcon className="size-3" strokeWidth={2.5} />
+            Recommended
+          </span>
+        ) : null}
+        {route.isFastest && !route.isRecommended ? (
+          <span className="bg-surface-3 text-ink-muted rounded-full px-2.5 py-[3px] text-xs font-medium whitespace-nowrap">
+            Fastest
+          </span>
+        ) : null}
+        {route.isGenerated ? (
+          <span className="bg-surface-3 text-ink-muted rounded-full px-2.5 py-[3px] text-xs font-medium whitespace-nowrap">
+            Generated
+          </span>
+        ) : null}
+      </span>
+
       <RiskStrip riskMiles={route.riskMiles} />
 
-      <span className="flex items-center justify-between gap-2">
+      <span className="flex items-center">
         <span
-          className="text-ink-muted flex items-center gap-3 text-[13px] tabular-nums"
+          className="text-ink-muted flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] tabular-nums"
           aria-label="Miles by risk level"
         >
           {STAT_LEVELS.map((level) => (
@@ -75,24 +94,6 @@ export function RouteCard({ route, selected, onSelect, reasons, compact = false 
             </span>
           ))}
           <span className="text-ink-tertiary">mi</span>
-        </span>
-        <span className="flex shrink-0 gap-1.5">
-          {route.isRecommended ? (
-            <span className="bg-primary/14 inline-flex items-center gap-1 rounded-full px-2.5 py-[3px] text-xs font-medium text-[#7dd3fc]">
-              <CheckIcon className="size-3" strokeWidth={2.5} />
-              Recommended
-            </span>
-          ) : null}
-          {route.isFastest && !route.isRecommended ? (
-            <span className="bg-surface-3 text-ink-muted rounded-full px-2.5 py-[3px] text-xs font-medium">
-              Fastest
-            </span>
-          ) : null}
-          {route.isGenerated ? (
-            <span className="bg-surface-3 text-ink-muted rounded-full px-2.5 py-[3px] text-xs font-medium">
-              Generated
-            </span>
-          ) : null}
         </span>
       </span>
 

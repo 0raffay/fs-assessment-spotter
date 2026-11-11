@@ -35,7 +35,11 @@ requests. It holds view settings that the map, forecast and checkpoint features 
   - Plan tools are disabled until a plan exists.
 - **`LayersPanel`:** the heatmap switch, a measure segment (Risk / Wind / Rain / Snow), an opacity
   slider (20 to 150%), switches for alternate routes, checkpoints, route numbers and place labels,
-  and basemap swatches (a radio group).
+  and basemap choices (a radio group).
+  - Each choice is a `BasemapPreview`: a tiny SVG map (water, park, roads, highway, city) in that
+    CARTO style's palette.
+  - "Theme" splits the dark and light maps on the diagonal. The selected tile gets a sky ring and
+    a check.
 - **`LegendPanel`:** risk levels with their colours and the map symbols.
 - **`MapToolsOverlay`:** the rail plus the open side panel beside it. Other features pass their
   panels through `extraPanels` (the checkpoint list).

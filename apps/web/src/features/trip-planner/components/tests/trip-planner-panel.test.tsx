@@ -80,4 +80,19 @@ describe('TripPlannerPanel', () => {
     )
     expect(screen.getByRole('radio', { name: '10 mi' })).toHaveAttribute('aria-checked', 'true')
   })
+
+  it('collapses into a rail that keeps its slot and expands again', async () => {
+    const { user } = renderWithProviders(
+      <TripPlannerProvider>
+        <TripPlannerPanel results={null} collapsed={<p>route rail slot</p>} />
+      </TripPlannerProvider>,
+    )
+    await user.click(screen.getByRole('button', { name: 'Collapse planner' }))
+
+    const rail = await screen.findByRole('region', { name: 'Trip planner (collapsed)' })
+    expect(within(rail).getByText('route rail slot')).toBeInTheDocument()
+
+    await user.click(within(rail).getByRole('button', { name: 'Expand planner' }))
+    expect(await screen.findByRole('heading', { name: 'Plan a trip' })).toBeInTheDocument()
+  })
 })

@@ -56,4 +56,13 @@ describe('RiskProfile', () => {
     await user.click(screen.getByRole('button', { name: 'Close risk profile' }))
     expect(onClose).toHaveBeenCalledOnce()
   })
+
+  it('marks the recommended route', () => {
+    setup()
+    const recommended = plan.routes.find((r) => r.id === plan.recommendedRouteId)!
+    expect(
+      screen.getByRole('button', { name: `Route ${recommended.rank} Recommended` }),
+    ).toBeInTheDocument()
+    expect(screen.getAllByText('Recommended')).toHaveLength(1)
+  })
 })

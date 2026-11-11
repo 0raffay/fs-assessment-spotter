@@ -36,8 +36,12 @@ interval, and owns the page that composes every other feature.
 ## Components
 
 - `TripPlannerPanel`: form while editing, otherwise summary + `results` slot.
-- `PlannerSurface`: floating left panel (desktop, collapsible), floating bottom sheet with
-  peek/half/full snaps (phone), tall bottom-left sheet (tablet).
+- `PlannerSurface`:
+  - **Desktop:** a floating left panel. Collapsing it leaves a 56px rail with an expand button and
+    the page's `collapsed` slot (the `RouteRail`); map padding and the bottom dock shift to start
+    after the rail.
+  - **Phone:** a floating bottom sheet with peek/half/full snaps.
+  - **Tablet:** a tall bottom-left sheet.
 - `TripForm`, `PlaceField` (on the generic `SearchCombobox<T>`), `DepartureFields`,
   `LoadWeightField`, `IntervalToggle`, `FormField`, `RouteConnector`.
 - `TripSummary`, `TripChip` (header-left).

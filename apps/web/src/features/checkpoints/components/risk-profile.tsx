@@ -1,4 +1,4 @@
-import { XIcon } from 'lucide-react'
+import { StarIcon, XIcon } from 'lucide-react'
 
 import { IconButton } from '@/components/icon-button'
 import { useRouteSelection } from '@/features/routes'
@@ -33,7 +33,7 @@ export function RiskProfile({ onClose }: { onClose: () => void }) {
         />
       </header>
 
-      <div className="grid grid-cols-[72px_1fr_64px] items-center gap-x-3 gap-y-2">
+      <div className="grid grid-cols-[auto_1fr_64px] items-center gap-x-3 gap-y-2">
         {plan.routes.map((route) => (
           <ProfileRow
             key={route.id}
@@ -86,12 +86,25 @@ function ProfileRow({
         onClick={() => selectRoute(route.id)}
         aria-pressed={selected}
         className={cn(
-          'truncate rounded-lg text-left text-[13px] transition-colors outline-none',
+          'flex items-center gap-1.5 rounded-lg text-left text-[13px] whitespace-nowrap transition-colors outline-none',
           'focus-visible:ring-ring/45 hover:text-ink focus-visible:ring-3',
           selected ? 'text-ink font-medium' : 'text-ink-subtle',
         )}
       >
+        {/* Every row reserves the star's width so the labels line up. */}
+        <StarIcon
+          aria-hidden
+          className={cn(
+            'size-3 shrink-0',
+            route.isRecommended ? 'fill-primary text-primary' : 'invisible',
+          )}
+        />
         Route {route.rank}
+        {route.isRecommended ? (
+          <span className="bg-primary/14 text-primary rounded-full px-1.5 py-px text-[11px] font-medium">
+            Recommended
+          </span>
+        ) : null}
       </button>
       <div
         role="group"

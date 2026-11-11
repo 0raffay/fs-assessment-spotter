@@ -17,6 +17,7 @@ import {
   RouteList,
   RouteListError,
   RouteListSkeleton,
+  RouteRail,
   RouteSelectionProvider,
   useRouteSelection,
   useTripPlan,
@@ -170,6 +171,7 @@ function PlanScreen({ plan, layout }: { plan: TripPlan; layout: LayoutKind }) {
         }}
       />
       <TripPlannerPanel
+        collapsed={<RouteRail />}
         results={
           <RouteList
             variant={layout === 'phone' && sheetSnap === 'peek' ? 'peek' : 'full'}

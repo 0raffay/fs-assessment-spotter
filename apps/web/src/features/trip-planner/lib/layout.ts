@@ -17,7 +17,8 @@ export function bottomDockStyle(
   isPanelOpen: boolean,
   sheetSnap: SheetSnap,
 ): CSSProperties {
-  if (layout === 'desktop') return { left: isPanelOpen ? 392 : 16, right: 76, bottom: 16 }
+  // Collapsed, the planner is a 56px rail at left 16, so the dock starts after it.
+  if (layout === 'desktop') return { left: isPanelOpen ? 392 : 84, right: 76, bottom: 16 }
   if (layout === 'tablet') return { left: 404, right: 12, bottom: 12 }
   return { left: 8, right: 8, bottom: `calc(${SHEET_HEIGHT[sheetSnap]} + 16px)` }
 }

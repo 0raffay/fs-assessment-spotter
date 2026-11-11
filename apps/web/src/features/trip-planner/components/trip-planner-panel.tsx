@@ -11,16 +11,18 @@ import { TripSummary } from './trip-summary'
 interface TripPlannerPanelProps {
   /** Shown under the trip summary once a trip is planned (the route list). */
   results: ReactNode
+  /** Shown in the collapsed desktop rail (the route switcher). */
+  collapsed?: ReactNode
 }
 
 /** The planner: the form while editing, otherwise the trip summary plus results. */
-export function TripPlannerPanel({ results }: TripPlannerPanelProps) {
+export function TripPlannerPanel({ results, collapsed }: TripPlannerPanelProps) {
   const { request, isEditing, startEditing } = useTripPlanner()
   const isDesktop = useIsDesktop()
 
   if (isEditing || !request) {
     return (
-      <PlannerSurface title="Plan a trip">
+      <PlannerSurface title="Plan a trip" collapsed={collapsed}>
         <p className="text-ink-subtle text-sm leading-relaxed">
           Compare three routes by the weather the truck meets at each checkpoint.
         </p>
@@ -30,7 +32,7 @@ export function TripPlannerPanel({ results }: TripPlannerPanelProps) {
   }
 
   return (
-    <PlannerSurface title="Trip">
+    <PlannerSurface title="Trip" collapsed={collapsed}>
       <TripSummary request={request} onEdit={startEditing} />
       <span aria-hidden className="bg-hairline -mx-4 h-px shrink-0" />
       {results}

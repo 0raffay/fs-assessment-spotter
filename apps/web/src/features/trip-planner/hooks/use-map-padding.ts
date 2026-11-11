@@ -7,6 +7,8 @@ import type { SheetSnap } from '../types'
 const SHEET_BOTTOM: Record<SheetSnap, number> = { peek: 200, half: 360, full: 360 }
 /** A desktop rail panel's width plus its gap to the rail. */
 const SIDE_PANEL_WIDTH = 312
+/** The collapsed planner rail (16px inset + 56px rail) plus breathing room. */
+const COLLAPSED_LEFT = 104
 
 /**
  * How much of the map frame the floating UI covers, so routes are fitted into the clear area
@@ -25,7 +27,7 @@ export function useMapPadding(bottomDock = 0, sidePanel = false): MapPadding {
       top: 64,
       right: sidePanel ? SIDE_PANEL_WIDTH + 96 : 96,
       bottom: 48 + bottomDock,
-      left: isPanelOpen ? 416 : 56,
+      left: isPanelOpen ? 416 : COLLAPSED_LEFT,
     }
   }
   if (isTablet) return { top: 72, right: 80, bottom: 48 + bottomDock, left: 412 }

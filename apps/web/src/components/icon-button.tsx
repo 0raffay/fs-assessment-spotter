@@ -31,8 +31,11 @@ export function IconButton({
           aria-label={label}
           aria-pressed={pressed}
           className={cn(
-            'text-ink-muted hover:bg-surface-3 hover:text-ink size-10 rounded-full transition-[background-color,color,transform] duration-150 active:scale-95',
-            pressed && 'bg-primary/15 text-primary hover:bg-primary/20 hover:text-primary',
+            // The shadcn ghost variant adds `dark:hover:bg-muted/50`, which outranks plain `hover:`
+            // in dark mode; restate every hover with `dark:` too so ours always wins.
+            'text-ink-muted hover:bg-surface-3 dark:hover:bg-surface-3 hover:text-ink size-10 rounded-full transition-[background-color,color,transform] duration-150 active:scale-95',
+            pressed &&
+              'bg-primary/15 text-primary hover:bg-primary/20 dark:hover:bg-primary/20 hover:text-primary',
             className,
           )}
           {...props}

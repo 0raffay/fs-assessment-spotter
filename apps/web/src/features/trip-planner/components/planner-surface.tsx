@@ -1,5 +1,5 @@
 import { AnimatePresence } from 'motion/react'
-import { PanelLeftCloseIcon } from 'lucide-react'
+import { PanelLeftCloseIcon, PanelLeftOpenIcon } from 'lucide-react'
 import type { ReactNode } from 'react'
 
 import { FloatingPanel } from '@/components/floating-panel'
@@ -14,20 +14,22 @@ import { SHEET_SNAPS } from '../types'
 interface PlannerSurfaceProps {
   title: string
   children: ReactNode
+  /** Desktop only: shown in the slim rail under the expand button while the planner is collapsed. */
+  collapsed?: ReactNode
 }
 
 /**
  * Where the planner lives: a floating left panel on desktop, a floating bottom sheet on tablets and
  * phones (DESIGN.md › Layout). Content is the same; only the container changes.
  */
-export function PlannerSurface({ title, children }: PlannerSurfaceProps) {
+export function PlannerSurface({ title, children, collapsed }: PlannerSurfaceProps) {
   const isDesktop = useIsDesktop()
   const isTablet = useMediaQuery('(min-width: 768px)') && !isDesktop
   const { isPanelOpen, setPanelOpen, sheetSnap, setSheetSnap } = useTripPlanner()
 
   if (isDesktop) {
     return (
-      <AnimatePresence>
+      <AnimatePresence mode="popLayout">
         {isPanelOpen ? (
           <FloatingPanel
             key="planner"
@@ -49,7 +51,28 @@ export function PlannerSurface({ title, children }: PlannerSurfaceProps) {
               {children}
             </div>
           </FloatingPanel>
-        ) : null}
+        ) : (
+          <FloatingPanel
+            key="planner-rail"
+            from="left"
+            aria-label="Trip planner (collapsed)"
+            className="absolute top-4 left-4 z-20 flex w-[56px] flex-col items-center gap-2 p-1.5"
+          >
+            <IconButton
+              label="Expand planner"
+              tooltipSide="right"
+              onClick={() => setPanelOpen(true)}
+              icon={<PanelLeftOpenIcon className="size-4" strokeWidth={1.75} />}
+              className="text-ink-subtle size-11 rounded-[14px]"
+            />
+            {collapsed ? (
+              <>
+                <span aria-hidden className="bg-hairline-strong h-px w-7" />
+                {collapsed}
+              </>
+            ) : null}
+          </FloatingPanel>
+        )}
       </AnimatePresence>
     )
   }
