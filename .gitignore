@@ -26,3 +26,6 @@ __pycache__/
 .mypy_cache/
 *.sqlite3
 staticfiles/
+
+# Local agent tooling
+.claude/

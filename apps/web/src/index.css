@@ -229,3 +229,47 @@
     @apply bg-primary/30;
   }
 }
+
+/* Motion keyframes (DESIGN.md › Motion). Durations come from the tokens above. */
+@keyframes sr-breathe {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+@keyframes sr-shimmer {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}
+@keyframes sr-pulse-ring {
+  0% {
+    box-shadow:
+      0 0 0 2px var(--canvas),
+      0 0 0 4px var(--ink),
+      0 0 0 4px color-mix(in oklch, var(--pulse-color, var(--primary)) 55%, transparent);
+  }
+  70%,
+  100% {
+    box-shadow:
+      0 0 0 2px var(--canvas),
+      0 0 0 4px var(--ink),
+      0 0 0 16px transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
