@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { MapProvider } from 'react-map-gl/maplibre'
 
 import { AppShell, type StatusInfo } from '@/features/app-shell'
 import {
@@ -10,6 +11,7 @@ import {
   useHeatmap,
 } from '@/features/forecast'
 import { TripMap, type MapStatus } from '@/features/map'
+import { MapToolsOverlay, MapToolsProvider, useMapTools } from '@/features/map-tools'
 import {
   RouteList,
   RouteListError,
@@ -39,7 +41,11 @@ const FORECAST_CHIP_HEIGHT = 58
 export function TripPlannerPage() {
   return (
     <TripPlannerProvider>
-      <PlannerScreen />
+      <MapProvider>
+        <MapToolsProvider>
+          <PlannerScreen />
+        </MapToolsProvider>
+      </MapProvider>
     </TripPlannerProvider>
   )
 }
@@ -112,6 +118,7 @@ function PlanScreen({ plan, layout }: { plan: TripPlan; layout: LayoutKind }) {
   const { request, isPanelOpen, sheetSnap } = useTripPlanner()
   const { selectedRoute } = useRouteSelection()
   const forecast = useForecast()
+  const tools = useMapTools()
   const heatmapQuery = useHeatmap(plan)
   const dockHeight = forecast.isOpen
     ? FORECAST_PANEL_HEIGHT[layout === 'desktop' ? 'desktop' : 'compact']
@@ -132,16 +139,22 @@ function PlanScreen({ plan, layout }: { plan: TripPlan; layout: LayoutKind }) {
       <TripMap
         padding={padding}
         status="ready"
+        basemap={tools.basemap}
+        layers={tools.layers}
         cardPlacement={layout === 'desktop' ? 'popup' : 'docked'}
       >
         {heatmapQuery.data ? (
           <HeatmapLayer
             heatmap={heatmapQuery.data}
             hour={forecast.hour}
+            measure={tools.heatmap.measure}
+            opacity={tools.heatmap.opacity}
+            visible={tools.heatmap.visible}
             beforeId="route-lines-alternate"
           />
         ) : null}
       </TripMap>
+      <MapToolsOverlay compact={layout !== 'desktop'} fitPadding={padding} />
       <TripPlannerPanel
         results={
           <RouteList

@@ -18,6 +18,9 @@ import { CheckpointCard } from './checkpoint-card'
 import { CheckpointMarkers, PlacePins, RouteTags } from './map-markers'
 import { RouteLines } from './route-lines'
 
+/** Id for `useMap()` (react-map-gl's MapProvider), so controls outside the map can drive it. */
+export const TRIP_MAP_ID = 'trip'
+
 const INITIAL_VIEW = { longitude: -98.5, latitude: 38.8, zoom: 3.6 }
 
 /**
@@ -88,6 +91,7 @@ export function TripMap({
   return (
     <div className="absolute inset-0">
       <MapGL
+        id={TRIP_MAP_ID}
         ref={mapRef}
         initialViewState={INITIAL_VIEW}
         mapStyle={basemapStyleUrl(basemap, theme)}
