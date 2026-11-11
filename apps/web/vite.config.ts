@@ -22,6 +22,8 @@ export default defineConfig(({ mode }) => {
     test: {
       environment: 'jsdom',
       setupFiles: ['./src/tests/setup.ts'],
+      env: { VITE_MOCK_DELAY_MS: '0', VITE_ENABLE_MOCKS: 'true' },
+      exclude: ['e2e/**', 'node_modules/**'],
     },
   }
 })
