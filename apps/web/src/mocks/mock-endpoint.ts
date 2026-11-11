@@ -26,7 +26,7 @@ const METHOD_HANDLERS = {
 } as const satisfies Record<HttpMethod, unknown>
 
 export interface MockOptions {
-  /** Overrides `VITE_MOCK_DELAY_MS` for this endpoint. */
+  /** Overrides `VITE_MOCK_DELAY_MS` for this endpoint (ignored when that is 0). */
   delayMs?: number
 }
 
@@ -55,7 +55,8 @@ export function mockEndpoint<E extends AnyEndpoint>(
   const url = `${env.VITE_API_BASE_URL.replace(/\/$/, '')}${endpoint.path}`
 
   return METHOD_HANDLERS[endpoint.method](url, async ({ request }) => {
-    await delay(options.delayMs ?? env.VITE_MOCK_DELAY_MS)
+    // A global delay of 0 (tests) turns every per-endpoint delay off too.
+    await delay(env.VITE_MOCK_DELAY_MS === 0 ? 0 : (options.delayMs ?? env.VITE_MOCK_DELAY_MS))
 
     let query: unknown
     if (endpoint.query) {
