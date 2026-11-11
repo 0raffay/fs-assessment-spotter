@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import { MapProvider } from 'react-map-gl/maplibre'
 
 import { AppShell, type StatusInfo } from '@/features/app-shell'
-import { CheckpointList, RISK_PROFILE_HEIGHT, RiskProfileDock } from '@/features/checkpoints'
+import { CheckpointList, RiskProfileDock } from '@/features/checkpoints'
 import {
   ForecastDock,
   ForecastProvider,
@@ -21,6 +21,7 @@ import {
   useRouteSelection,
   useTripPlan,
 } from '@/features/routes'
+import { useElementHeight } from '@/hooks/use-element-height'
 import { useIsDesktop, useMediaQuery } from '@/hooks/use-media-query'
 import { formatClock } from '@/lib/format'
 import { localTimeZone } from '@/lib/time'
@@ -33,10 +34,6 @@ import { TripPlannerProvider } from '../context/trip-planner-context'
 import { useTripPlanner } from '../context/trip-planner-store'
 import { useMapPadding } from '../hooks/use-map-padding'
 import { bottomDockStyle, type LayoutKind } from '../lib/layout'
-
-/** Height (px) the forecast takes along the bottom of the map: open panel (full / compact) or chip. */
-const FORECAST_PANEL_HEIGHT = { desktop: 214, compact: 170 } as const
-const FORECAST_CHIP_HEIGHT = 58
 
 /** The single screen: header, map frame, and everything floating over the map. */
 export function TripPlannerPage() {
@@ -124,11 +121,10 @@ function PlanScreen({ plan, layout }: { plan: TripPlan; layout: LayoutKind }) {
   const compact = layout !== 'desktop'
   // The bottom dock holds the risk profile (desktop) or the forecast panel/chip, never both.
   const profileOpen = !compact && tools.isProfileOpen
-  const dockHeight = profileOpen
-    ? RISK_PROFILE_HEIGHT
-    : forecast.isOpen
-      ? FORECAST_PANEL_HEIGHT[compact ? 'compact' : 'desktop']
-      : FORECAST_CHIP_HEIGHT
+  // Measured, not assumed: the map keeps routes clear of whatever the dock really covers.
+  const [forecastRef, forecastHeight] = useElementHeight<HTMLDivElement>()
+  const [profileRef, profileHeight] = useElementHeight<HTMLElement>()
+  const dockHeight = profileOpen ? profileHeight : forecastHeight
   const padding = useMapPadding(dockHeight, tools.activePanel !== null)
   const dockStyle = bottomDockStyle(layout, isPanelOpen, sheetSnap)
 
@@ -190,12 +186,14 @@ function PlanScreen({ plan, layout }: { plan: TripPlan; layout: LayoutKind }) {
           timeZone={plan.request.origin.timeZone}
           compact={compact}
           style={dockStyle}
+          ref={forecastRef}
         />
       )}
       <RiskProfileDock
         open={profileOpen}
         onClose={() => tools.setProfileOpen(false)}
         style={dockStyle}
+        ref={profileRef}
       />
       <SheetAutoPeek />
     </AppShell>

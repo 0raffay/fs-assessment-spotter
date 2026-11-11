@@ -34,7 +34,7 @@ export function RouteCard({ route, selected, onSelect, reasons, compact = false 
         'hover:border-hairline-tertiary focus-visible:ring-ring/45 hover:-translate-y-px focus-visible:ring-3 active:scale-[0.99]',
         selected
           ? 'bg-surface-2 border-primary/55'
-          : 'bg-surface-1 border-hairline hover:bg-[#13151a]',
+          : 'bg-surface-1 border-hairline hover:bg-surface-2 hover:shadow-[0_10px_28px_-12px_rgb(0_0_0/0.35)]',
         compact ? 'p-3.5' : 'p-4',
       )}
     >

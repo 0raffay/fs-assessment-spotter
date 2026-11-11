@@ -36,8 +36,8 @@ profile, the map markers and the checkpoint card always show the same selection.
     `selectCheckpoint(id, routeId)`).
   - A marker line and a "mi 350" pill track the selected checkpoint across all routes. With
     nothing selected, the axis shows 0, half and full miles.
-- **`RiskProfileDock`:** the profile in a floating panel in the bottom dock. `RISK_PROFILE_HEIGHT`
-  feeds the map padding.
+- **`RiskProfileDock`:** the profile in a floating panel in the bottom dock. It accepts a `ref`; the
+  page measures its height (`useElementHeight`) to pad the map.
 
 ## Tests
 

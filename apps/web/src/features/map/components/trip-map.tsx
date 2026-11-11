@@ -13,16 +13,28 @@ import { basemapStyleUrl } from '../lib/basemaps'
 import { routesBounds } from '../lib/geojson'
 import { clampPadding } from '../lib/padding'
 import { ROUTE_LAYER_IDS } from '../lib/layers'
-import { DEFAULT_LAYER_VISIBILITY, type TripMapProps } from '../types'
+import { DEFAULT_LAYER_VISIBILITY, type MapPadding, type TripMapProps } from '../types'
 
 import { CheckpointCard } from './checkpoint-card'
-import { CheckpointMarkers, PlacePins, RouteTags } from './map-markers'
+import { CheckpointMarkers, RouteTags } from './map-markers'
 import { RouteLines } from './route-lines'
+import { TripEndpoints } from './trip-endpoints'
 
 /** Id for `useMap()` (react-map-gl's MapProvider), so controls outside the map can drive it. */
 export const TRIP_MAP_ID = 'trip'
 
 const INITIAL_VIEW = { longitude: -98.5, latitude: 38.8, zoom: 3.6 }
+
+/** Width (px) of a Start / Arrive label beside its pin, kept clear when fitting routes. */
+const ENDPOINT_LABEL_ROOM = 170
+/** The route area never shrinks below this (px) to make room for the labels. */
+const MIN_ROUTE_WIDTH = 480
+
+/** Adds room on the right for the Start / Arrive labels, taken only from spare width. */
+function withLabelRoom(padding: MapPadding, width: number): MapPadding {
+  const spare = width - padding.left - padding.right - MIN_ROUTE_WIDTH
+  return { ...padding, right: padding.right + Math.min(ENDPOINT_LABEL_ROOM, Math.max(spare, 0)) }
+}
 
 /** Room the checkpoint card needs beside its marker: to the right (popup) or above (docked). */
 const CARD_ROOM = { popup: { right: 340, vertical: 200 }, docked: { top: 380 } } as const
@@ -58,7 +70,7 @@ export function TripMap({
     if (!map) return
     const { width, height } = map.getContainer().getBoundingClientRect()
     map.fitBounds(routesBounds(plan.routes), {
-      padding: clampPadding(padding, width, height),
+      padding: clampPadding(withLabelRoom(padding, width), width, height),
       duration: 900,
     })
     // `paddingKey` stands for `padding`.
@@ -159,7 +171,6 @@ export function TripMap({
         {children}
         {plan && selectedRoute && selection ? (
           <>
-            <PlacePins origin={plan.request.origin} destination={plan.request.destination} />
             {layers.routeNumbers ? (
               <RouteTags
                 routes={layers.alternateRoutes ? plan.routes : [selectedRoute]}
@@ -174,6 +185,12 @@ export function TripMap({
                 onSelect={selection.selectCheckpoint}
               />
             ) : null}
+            <TripEndpoints
+              origin={plan.request.origin}
+              destination={plan.request.destination}
+              departureAt={selectedRoute.departureAt}
+              arrivalAt={selectedRoute.arrivalAt}
+            />
             {checkpoint && cardPlacement === 'popup' && card ? (
               <Popup
                 longitude={checkpoint.coordinates[0]}

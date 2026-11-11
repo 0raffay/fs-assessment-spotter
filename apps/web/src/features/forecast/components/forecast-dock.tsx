@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'motion/react'
 import { ChevronUpIcon, ClockIcon, LoaderCircleIcon } from 'lucide-react'
-import type { CSSProperties } from 'react'
+import type { CSSProperties, Ref } from 'react'
 
 import { FloatingPanel } from '@/components/floating-panel'
 import { panelVariants } from '@/lib/motion'
@@ -20,6 +20,8 @@ interface ForecastDockProps {
   compact: boolean
   /** Where the dock sits inside the map frame. */
   style: CSSProperties
+  /** Receives the dock element, e.g. to measure the height it takes over the map. */
+  ref?: Ref<HTMLDivElement>
 }
 
 /** The forecast along the bottom of the map: a chip when closed, the timeline when open. */
@@ -31,11 +33,12 @@ export function ForecastDock({
   timeZone,
   compact,
   style,
+  ref,
 }: ForecastDockProps) {
   const { isOpen, setOpen, hour } = useForecast()
 
   return (
-    <div className="pointer-events-none absolute z-20 flex justify-center" style={style}>
+    <div ref={ref} className="pointer-events-none absolute z-20 flex justify-center" style={style}>
       <AnimatePresence mode="wait" initial={false}>
         {isOpen && heatmap ? (
           <FloatingPanel

@@ -4,40 +4,9 @@ import { Marker } from 'react-map-gl/maplibre'
 import { formatClock, formatNumber } from '@/lib/format'
 import { RISK_META } from '@/lib/risk'
 import { cn } from '@/lib/utils'
-import type { Checkpoint, CheckpointId, Place, Route, RouteId } from '@/types'
+import type { Checkpoint, CheckpointId, Route, RouteId } from '@/types'
 
 import { lineMidpoint } from '../lib/geojson'
-
-/** Origin (open circle) and destination (filled square) with pill labels. */
-export function PlacePins({ origin, destination }: { origin: Place; destination: Place }) {
-  return (
-    <>
-      {[origin, destination].map((place, i) => (
-        <Marker
-          key={place.id}
-          longitude={place.coordinates[0]}
-          latitude={place.coordinates[1]}
-          anchor="left"
-          offset={[-8, 0]}
-        >
-          <span className="pointer-events-none flex items-center gap-2">
-            <span
-              className={cn(
-                'size-4 shrink-0',
-                i === 0
-                  ? 'bg-canvas border-ink rounded-full border-[3px]'
-                  : 'bg-ink rounded-[5px] shadow-[0_0_0_3px_var(--canvas)]',
-              )}
-            />
-            <span className="bg-canvas/80 rounded-full px-2.5 py-1 text-[13px] font-medium whitespace-nowrap backdrop-blur-sm">
-              {place.name}, {place.region}
-            </span>
-          </span>
-        </Marker>
-      ))}
-    </>
-  )
-}
 
 /** Numbered tags on each route line, matching the route cards. */
 export function RouteTags({

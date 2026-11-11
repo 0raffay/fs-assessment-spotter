@@ -39,6 +39,15 @@ describe('AppShell', () => {
     await user.click(screen.getByRole('button', { name: /share/i }))
     expect(await navigator.clipboard.readText()).toBe(window.location.href)
     expect(await screen.findByText('Link copied')).toBeInTheDocument()
+
+    // The button itself confirms the copy, then returns to "Share".
+    const copied = screen.getByRole('button', { name: 'Copied' })
+    expect(copied).toHaveAttribute('data-state', 'copied')
+    await waitFor(
+      () =>
+        expect(screen.getByRole('button', { name: 'Share' })).toHaveAttribute('data-state', 'idle'),
+      { timeout: 3000 },
+    )
   })
 
   it('toggles the theme', async () => {

@@ -6,13 +6,26 @@ The map that fills the frame: basemap, the three routes, checkpoints and the che
 - **Basemaps (CARTO, no key):** Dark Matter (dark theme), Positron (light theme), Voyager
   ("terrain"). `basemap="auto"` follows the theme.
 - **Routes:** one GeoJSON source. Alternates are drawn in gray underneath; the selected route is sky
-  blue with a canvas casing. Clicking a line or its numbered tag selects that route.
+  blue with a canvas casing and white chevrons pointing the way (`route-lines-arrows`, a symbol layer
+  whose image is drawn on a canvas and re-added on `styleimagemissing` after style changes).
+  Clicking a line or its numbered tag selects that route. Injected layers (the heatmap) render after
+  the route lines so their `beforeId` anchor always exists.
 - **Checkpoints:** a DOM marker per checkpoint on the selected route, colored by its risk at the ETA
   (gray when beyond the forecast range). They fade in one after another, scale on hover and keyboard
   focus, and the selected one pulses in its risk color.
-- **Pins:** origin (open circle) and destination (filled square) with labels.
-- **Fit:** on a new plan, the map fits all routes into the area the floating UI leaves clear
-  (`useMapPadding` in `trip-planner`).
+- **Start and Arrive (`TripEndpoints`):**
+  - A sky-ringed start pin and a dark flag pin, each with a two-line label: "Start · Pueblo, CO" over
+    "Thu 06:00 MST", and "Arrive · Houston, TX" over the selected route's arrival time in the
+    destination's zone.
+  - They sit above the checkpoint dots.
+- **Fit:**
+  - On a new plan, the map fits all routes into the area the floating UI leaves clear
+    (`useMapPadding` in `trip-planner`).
+  - That clear area includes the measured bottom dock and any open rail panel. Spare width is kept
+    for the endpoint labels.
+  - `clampPadding` stops a narrow window zooming out to the whole continent.
+- **Selecting a checkpoint** eases the map to it when it's outside the clear area, leaving room for
+  its card.
 - **Checkpoint card:** a popup next to the marker on desktop, docked at the top on phones and
   tablets (the phone sheet drops to peek so it has room). It shows the ETA, mile and location,
   wind/rain/snow tiles with 5-step meters, which condition decides the level, whether the load rule
@@ -33,6 +46,12 @@ helpers, and the types `Basemap`, `MapLayerVisibility`, `MapPadding`, `MapStatus
 - The popup auto-focused its first button, flashing a tooltip; turned off with `focusAfterOpen`.
 - On phones the docked card sat under the half-height sheet; opening a checkpoint now peeks the
   sheet. Badge and mile text no longer wrap mid-phrase.
+- On a style change, the heatmap was added before its route-lines anchor (MapLibre threw); fixed by
+  layer order.
+- A checkpoint near the right edge opened its card behind the checkpoint list; the padding now
+  includes open panels and the map pans to the checkpoint.
+- Hard-coded dock heights were wrong (214 vs 245 px), so routes ended under the forecast; the dock
+  is now measured.
 
 ## Tests
 

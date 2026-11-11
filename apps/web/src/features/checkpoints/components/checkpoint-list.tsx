@@ -65,16 +65,19 @@ export function CheckpointList({ onClose, onPicked }: CheckpointListProps) {
             if (match) setFilter(match)
           }}
           aria-label="Show checkpoints"
-          className="bg-surface-2 grid w-full grid-cols-3 gap-0.5 rounded-[14px] p-[3px]"
+          spacing={0.5}
+          className="bg-surface-2 flex w-full rounded-[14px] p-[3px]"
         >
           {CHECKPOINT_FILTERS.map((option) => (
             <ToggleGroupItem
               key={option}
               value={option}
-              className="text-ink-subtle hover:bg-surface-3 hover:text-ink data-[state=on]:bg-surface-4 data-[state=on]:text-ink h-[34px] rounded-[11px] text-[13px] font-medium transition-[background-color,color,transform] active:scale-[0.97]"
+              className="text-ink-subtle hover:bg-surface-3 hover:text-ink data-[state=on]:bg-surface-4 data-[state=on]:text-ink h-[34px] min-w-0 flex-auto gap-1.5 rounded-[11px] px-2 text-[13px] font-medium transition-[background-color,color,transform] active:scale-[0.97] data-[state=on]:shadow-[0_2px_8px_rgb(0_0_0/0.18)]"
             >
               {FILTER_LABELS[option]}
-              <span className="text-ink-subtle ml-1 tabular-nums">{counts[option]}</span>
+              <span className="text-ink-subtle text-xs font-normal tabular-nums">
+                {counts[option]}
+              </span>
             </ToggleGroupItem>
           ))}
         </ToggleGroup>
