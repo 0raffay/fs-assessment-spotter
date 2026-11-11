@@ -73,7 +73,7 @@ export type LngLat = z.infer<typeof lngLatSchema>
 export const bboxSchema = z.tuple([z.number(), z.number(), z.number(), z.number()])
 export type BBox = z.infer<typeof bboxSchema>
 
-export const placeIdSchema = z.string().min(1).brand<'PlaceId'>()
+export const placeIdSchema = z.string().min(1).brand<'PlaceId', 'inout'>()
 export type PlaceId = z.infer<typeof placeIdSchema>
 
 export const placeSchema = z.object({
@@ -108,7 +108,7 @@ export type TripRequest = z.infer<typeof tripRequestSchema>
 // Checkpoints
 // ---------------------------------------------------------------------------
 
-export const checkpointIdSchema = z.string().min(1).brand<'CheckpointId'>()
+export const checkpointIdSchema = z.string().min(1).brand<'CheckpointId', 'inout'>()
 export type CheckpointId = z.infer<typeof checkpointIdSchema>
 
 /** A forecast exists for the checkpoint's ETA, or the ETA is beyond the forecast range. */
@@ -145,7 +145,7 @@ export type Checkpoint = z.infer<typeof checkpointSchema>
 // Routes and plan
 // ---------------------------------------------------------------------------
 
-export const routeIdSchema = z.string().min(1).brand<'RouteId'>()
+export const routeIdSchema = z.string().min(1).brand<'RouteId', 'inout'>()
 export type RouteId = z.infer<typeof routeIdSchema>
 
 export const routeSchema = z.object({
@@ -190,7 +190,7 @@ export const reasonFactSchema = z.discriminatedUnion('kind', [
 ])
 export type ReasonFact = z.infer<typeof reasonFactSchema>
 
-export const tripPlanIdSchema = z.string().min(1).brand<'TripPlanId'>()
+export const tripPlanIdSchema = z.string().min(1).brand<'TripPlanId', 'inout'>()
 export type TripPlanId = z.infer<typeof tripPlanIdSchema>
 
 export const tripPlanSchema = z.object({
