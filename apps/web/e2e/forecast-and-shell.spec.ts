@@ -36,10 +36,24 @@ test('switches theme and opens the risk help', async ({ page, isMobile }) => {
   await expect(page.getByRole('dialog')).toBeHidden()
 })
 
-test('renders the map canvas without page errors', async ({ page }) => {
+test('renders the map without page or map errors', async ({ page }) => {
   const errors: string[] = []
   page.on('pageerror', (error) => errors.push(error.message))
+  // MapLibre reports a missing worker on the console, not as a page error.
+  page.on('console', (message) => {
+    if (message.type() === 'error' && /Worker failed to load/i.test(message.text())) {
+      errors.push(message.text())
+    }
+  })
   await planDallasToDenver(page)
   await expect(page.locator('.maplibregl-canvas')).toBeVisible()
+  // The worker is what turns tiles into pixels; it must have loaded.
+  await expect
+    .poll(() =>
+      page.evaluate(() =>
+        performance.getEntriesByType('resource').some((e) => /maplibre-gl-worker/.test(e.name)),
+      ),
+    )
+    .toBe(true)
   expect(errors).toEqual([])
 })

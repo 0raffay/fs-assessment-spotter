@@ -20,8 +20,11 @@ const channel = process.env.PW_CHANNEL || undefined
  * - `django` (`pnpm test:e2e:django`, see playwright.django.config.ts): the real Django API with
  *   its offline fake providers, so no keys, network or rate limits.
  */
-export function createConfig(backend: 'mocks' | 'django') {
+export function createConfig(backend: 'mocks' | 'django' | 'build') {
   const withDjango = backend === 'django'
+  // `build`: the production bundle (vite build + preview) with mocks, catching bundling-only bugs
+  // that the dev server hides (e.g. a worker file the build didn't emit).
+  const fromBuild = backend === 'build'
   return defineConfig({
     testDir: './e2e',
     fullyParallel: true,
@@ -60,10 +63,12 @@ export function createConfig(backend: 'mocks' | 'django') {
           ]
         : []),
       {
-        command: `pnpm exec vite --port ${PORT} --strictPort`,
+        command: fromBuild
+          ? `pnpm exec vite build && pnpm exec vite preview --port ${PORT} --strictPort`
+          : `pnpm exec vite --port ${PORT} --strictPort`,
         url: `http://localhost:${PORT}`,
-        // A server left from the other mode would have the wrong mocks setting.
-        reuseExistingServer: !process.env.CI && !withDjango,
+        // A server left from another mode would be the wrong build or mocks setting.
+        reuseExistingServer: !process.env.CI && backend === 'mocks',
         timeout: 120_000,
         env: withDjango
           ? { VITE_ENABLE_MOCKS: 'false', VITE_API_PROXY_TARGET: `http://127.0.0.1:${API_PORT}` }

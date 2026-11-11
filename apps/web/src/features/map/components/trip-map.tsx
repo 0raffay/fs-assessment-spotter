@@ -1,4 +1,6 @@
 import 'maplibre-gl/dist/maplibre-gl.css'
+// Before any map exists: points MapLibre at its bundled worker (see the module).
+import '../lib/maplibre-worker'
 
 import { AnimatePresence, motion } from 'motion/react'
 import { LoaderCircleIcon, MapIcon } from 'lucide-react'
