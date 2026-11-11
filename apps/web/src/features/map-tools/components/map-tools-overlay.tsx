@@ -15,7 +15,7 @@ import { MapToolRail } from './map-tool-rail'
 interface MapToolsOverlayProps {
   compact: boolean
   fitPadding: MapPadding
-  /** Panels owned by other features (checkpoint list, risk profile), keyed by panel id. */
+  /** Panels owned by other features (the checkpoint list), keyed by panel id. */
   extraPanels?: Partial<Record<MapPanel, ReactNode>>
 }
 
@@ -23,7 +23,6 @@ const PANEL_TITLES: Record<MapPanel, string> = {
   layers: 'Map layers',
   legend: 'Legend',
   checkpoints: 'Checkpoints',
-  profile: 'Risk profile',
 }
 
 /** The rail at the top right and whichever panel it has open, beside it. */
@@ -42,7 +41,7 @@ export function MapToolsOverlay({ compact, fitPadding, extraPanels = {} }: MapTo
         <MapToolRail compact={compact} fitPadding={fitPadding} />
       </div>
       <AnimatePresence mode="wait">
-        {activePanel && content && activePanel !== 'profile' ? (
+        {activePanel && content ? (
           <FloatingPanel
             key={activePanel}
             from="right"

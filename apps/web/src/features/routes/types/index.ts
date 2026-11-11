@@ -8,7 +8,8 @@ export interface RouteSelectionState {
   selectedRoute: Route
   selectRoute: (id: RouteId) => void
   selectedCheckpoint: Checkpoint | null
-  selectCheckpoint: (id: CheckpointId | null) => void
+  /** Selects a checkpoint on the selected route, or on `routeId` (which also becomes selected). */
+  selectCheckpoint: (id: CheckpointId | null, routeId?: RouteId) => void
   /** Steps to the previous/next checkpoint on the selected route. */
   stepCheckpoint: (direction: -1 | 1) => void
 }

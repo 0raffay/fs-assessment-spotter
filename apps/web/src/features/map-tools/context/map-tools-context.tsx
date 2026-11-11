@@ -13,6 +13,7 @@ export function MapToolsProvider({ children }: { children: ReactNode }) {
   const [activePanel, setActivePanel] = useState<MapPanel | null>(null)
   const [basemap, setBasemap] = useState<Basemap>('auto')
   const [layers, setLayers] = useState<MapLayerVisibility>(DEFAULT_LAYER_VISIBILITY)
+  const [isProfileOpen, setProfileOpen] = useState(false)
   const [heatmap, setHeatmapState] = useState<HeatmapSettings>(DEFAULT_HEATMAP)
 
   // Escape closes the open panel.
@@ -28,6 +29,8 @@ export function MapToolsProvider({ children }: { children: ReactNode }) {
       activePanel,
       togglePanel: (panel) => setActivePanel((current) => (current === panel ? null : panel)),
       closePanel: () => setActivePanel(null),
+      isProfileOpen,
+      setProfileOpen,
       basemap,
       setBasemap,
       layers,
@@ -35,7 +38,7 @@ export function MapToolsProvider({ children }: { children: ReactNode }) {
       heatmap,
       setHeatmap: (key, next) => setHeatmapState((current) => ({ ...current, [key]: next })),
     }),
-    [activePanel, basemap, layers, heatmap],
+    [activePanel, isProfileOpen, basemap, layers, heatmap],
   )
 
   return <MapToolsContextProvider value={value}>{children}</MapToolsContextProvider>

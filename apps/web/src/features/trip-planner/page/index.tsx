@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import { MapProvider } from 'react-map-gl/maplibre'
 
 import { AppShell, type StatusInfo } from '@/features/app-shell'
+import { CheckpointList, RISK_PROFILE_HEIGHT, RiskProfileDock } from '@/features/checkpoints'
 import {
   ForecastDock,
   ForecastProvider,
@@ -120,10 +121,16 @@ function PlanScreen({ plan, layout }: { plan: TripPlan; layout: LayoutKind }) {
   const forecast = useForecast()
   const tools = useMapTools()
   const heatmapQuery = useHeatmap(plan)
-  const dockHeight = forecast.isOpen
-    ? FORECAST_PANEL_HEIGHT[layout === 'desktop' ? 'desktop' : 'compact']
-    : FORECAST_CHIP_HEIGHT
+  const compact = layout !== 'desktop'
+  // The bottom dock holds the risk profile (desktop) or the forecast panel/chip, never both.
+  const profileOpen = !compact && tools.isProfileOpen
+  const dockHeight = profileOpen
+    ? RISK_PROFILE_HEIGHT
+    : forecast.isOpen
+      ? FORECAST_PANEL_HEIGHT[compact ? 'compact' : 'desktop']
+      : FORECAST_CHIP_HEIGHT
   const padding = useMapPadding(dockHeight)
+  const dockStyle = bottomDockStyle(layout, isPanelOpen, sheetSnap)
 
   const status: StatusInfo = {
     tone: 'ok',
@@ -132,7 +139,7 @@ function PlanScreen({ plan, layout }: { plan: TripPlan; layout: LayoutKind }) {
 
   return (
     <AppShell
-      headerStart={<TripChip compact={layout !== 'desktop'} />}
+      headerStart={<TripChip compact={compact} />}
       canShare={request !== null}
       status={status}
     >
@@ -154,23 +161,41 @@ function PlanScreen({ plan, layout }: { plan: TripPlan; layout: LayoutKind }) {
           />
         ) : null}
       </TripMap>
-      <MapToolsOverlay compact={layout !== 'desktop'} fitPadding={padding} />
+      <MapToolsOverlay
+        compact={compact}
+        fitPadding={padding}
+        extraPanels={{
+          checkpoints: (
+            <CheckpointList
+              onClose={tools.closePanel}
+              onPicked={compact ? tools.closePanel : undefined}
+            />
+          ),
+        }}
+      />
       <TripPlannerPanel
         results={
           <RouteList
             variant={layout === 'phone' && sheetSnap === 'peek' ? 'peek' : 'full'}
-            compact={layout !== 'desktop'}
+            compact={compact}
           />
         }
       />
-      <ForecastDock
-        heatmap={heatmapQuery.data}
-        isLoading={heatmapQuery.isPending}
-        departureAt={selectedRoute.departureAt}
-        arrivalAt={selectedRoute.arrivalAt}
-        timeZone={plan.request.origin.timeZone}
-        compact={layout !== 'desktop'}
-        style={bottomDockStyle(layout, isPanelOpen, sheetSnap)}
+      {profileOpen ? null : (
+        <ForecastDock
+          heatmap={heatmapQuery.data}
+          isLoading={heatmapQuery.isPending}
+          departureAt={selectedRoute.departureAt}
+          arrivalAt={selectedRoute.arrivalAt}
+          timeZone={plan.request.origin.timeZone}
+          compact={compact}
+          style={dockStyle}
+        />
+      )}
+      <RiskProfileDock
+        open={profileOpen}
+        onClose={() => tools.setProfileOpen(false)}
+        style={dockStyle}
       />
       <SheetAutoPeek />
     </AppShell>

@@ -3,8 +3,11 @@ import type { ReactNode } from 'react'
 import type { HeatmapMeasure } from '@/features/forecast'
 import type { Basemap, MapLayerVisibility } from '@/features/map'
 
-/** Panels the rail can open. `forecast` lives in the forecast feature; the rest are owned here. */
-export const MAP_PANELS = ['layers', 'legend', 'checkpoints', 'profile'] as const
+/**
+ * Side panels the rail opens, one at a time, beside the rail. The forecast and the risk profile live
+ * in the bottom dock and toggle on their own.
+ */
+export const MAP_PANELS = ['layers', 'legend', 'checkpoints'] as const
 export type MapPanel = (typeof MAP_PANELS)[number]
 
 export interface HeatmapSettings {
@@ -18,6 +21,9 @@ export interface MapToolsState {
   activePanel: MapPanel | null
   togglePanel: (panel: MapPanel) => void
   closePanel: () => void
+  /** The risk profile in the bottom dock (desktop only). */
+  isProfileOpen: boolean
+  setProfileOpen: (open: boolean) => void
   basemap: Basemap
   setBasemap: (basemap: Basemap) => void
   layers: MapLayerVisibility

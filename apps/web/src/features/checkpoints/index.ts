@@ -1,0 +1,6 @@
+export { CheckpointList } from './components/checkpoint-list'
+export { RiskProfile } from './components/risk-profile'
+export { RISK_PROFILE_HEIGHT, RiskProfileDock } from './components/risk-profile-dock'
+export { countByFilter, filterCheckpoints, longestRoute, profileSegments } from './lib/checkpoints'
+export { CHECKPOINT_FILTERS } from './types'
+export type { CheckpointFilter, ProfileSegment } from './types'

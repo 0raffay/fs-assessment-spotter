@@ -41,8 +41,8 @@ export function RouteSelectionProvider({
       selectedRoute,
       selectedCheckpoint,
       selectRoute: (routeId) => setSelection({ planId: plan.id, routeId, checkpointId: null }),
-      selectCheckpoint: (checkpointId) =>
-        setSelection({ planId: plan.id, routeId: selectedRoute.id, checkpointId }),
+      selectCheckpoint: (checkpointId, routeId = selectedRoute.id) =>
+        setSelection({ planId: plan.id, routeId, checkpointId }),
       stepCheckpoint: (direction) => {
         const checkpoints = selectedRoute.checkpoints
         const index = selectedCheckpoint ? checkpoints.indexOf(selectedCheckpoint) : -1

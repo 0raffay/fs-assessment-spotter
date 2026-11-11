@@ -20,13 +20,13 @@ import type { MapPanel, ToolDefinition } from '../types'
 
 import { ToolRail } from './tool-rail'
 
-type ToolId = MapPanel | 'forecast' | 'fit' | 'zoom-in' | 'zoom-out'
+type ToolId = MapPanel | 'forecast' | 'profile' | 'fit' | 'zoom-in' | 'zoom-out'
 
 const ICON = 'size-[18px]'
 
 /** The concrete rail: panels, forecast toggle, fit and zoom. Phones get a shorter rail. */
 export function MapToolRail({ compact, fitPadding }: { compact: boolean; fitPadding: MapPadding }) {
-  const { activePanel, togglePanel } = useMapTools()
+  const { activePanel, togglePanel, isProfileOpen, setProfileOpen } = useMapTools()
   const forecast = useOptionalForecast()
   const selection = useOptionalRouteSelection()
   const map = useMap()[TRIP_MAP_ID]
@@ -49,13 +49,30 @@ export function MapToolRail({ compact, fitPadding }: { compact: boolean; fitPadd
       icon: <ClockIcon className={ICON} strokeWidth={1.75} />,
       pressed: forecast?.isOpen ?? false,
       disabled: disabled || !forecast,
-      onSelect: () => forecast?.setOpen(!forecast.isOpen),
+      // The forecast and the risk profile take turns in the bottom dock.
+      onSelect: () => {
+        if (!forecast) return
+        if (!forecast.isOpen) setProfileOpen(false)
+        forecast.setOpen(!forecast.isOpen)
+      },
     },
     panel('legend', 'Legend', <PaletteIcon className={ICON} strokeWidth={1.75} />),
     panel('checkpoints', 'Checkpoint list', <ListIcon className={ICON} strokeWidth={1.75} />),
     ...(compact
       ? []
-      : [panel('profile', 'Risk profile', <ChartLineIcon className={ICON} strokeWidth={1.75} />)]),
+      : [
+          {
+            id: 'profile',
+            label: 'Risk profile',
+            icon: <ChartLineIcon className={ICON} strokeWidth={1.75} />,
+            pressed: isProfileOpen,
+            disabled,
+            onSelect: () => {
+              if (!isProfileOpen) forecast?.setOpen(false)
+              setProfileOpen(!isProfileOpen)
+            },
+          } satisfies ToolDefinition<ToolId>,
+        ]),
     {
       id: 'fit',
       label: 'Fit all routes',
